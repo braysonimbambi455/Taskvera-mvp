@@ -65,8 +65,9 @@ export default function Navbar() {
                 )}
               </Link>
               <Link href={`/profile/${user.id}`} className="hover:text-indigo-600">
-                {profile?.full_name?.split(' ')[0] ?? 'Profile'}
-              </Link>
+  {profile?.full_name?.split(' ')[0] ?? 'Profile'}
+</Link>
+<Link href="/profile/edit" className="hover:text-indigo-600">Edit</Link>
               <button onClick={logout} className="text-red-600 text-left">Logout</button>
             </>
           ) : (
