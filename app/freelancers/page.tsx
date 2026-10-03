@@ -30,7 +30,7 @@ export default async function FreelancersPage({
     .select('skills')
     .eq('role', 'student')
 
-  const allSkills = Array.from(
+  const allSkills: string[] = Array.from(
     new Set(
       (allSkillsRaw ?? [])
         .flatMap((r) => r.skills ?? [])
@@ -69,7 +69,7 @@ export default async function FreelancersPage({
           >
             All
           </Link>
-          {allSkills.map((s) => (
+          {allSkills.map((s: string) => (
             <Link
               key={s}
               href={`/freelancers?skill=${encodeURIComponent(s)}`}
@@ -122,9 +122,9 @@ export default async function FreelancersPage({
             <div className="flex items-center gap-2 mb-3 text-sm">
               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               <span className="font-medium">{f.rating ?? 0}</span>
-              {f.total_earnings > 0 && (
+              {(f.total_earnings ?? 0) > 0 && (
                 <span className="text-gray-400">
-                  · KES {f.total_earnings.toLocaleString()} earned
+                  · KES {(f.total_earnings ?? 0).toLocaleString()} earned
                 </span>
               )}
             </div>
@@ -135,7 +135,7 @@ export default async function FreelancersPage({
 
             {f.skills && f.skills.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-4">
-                {f.skills.slice(0, 4).map((s) => (
+                {f.skills.slice(0, 4).map((s: string) => (
                   <span key={s} className="text-xs bg-gray-100 px-2 py-1 rounded">
                     {s}
                   </span>

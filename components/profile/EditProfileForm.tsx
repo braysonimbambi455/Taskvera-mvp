@@ -88,9 +88,9 @@ export default function EditProfileForm({
     const updates: any = {
       full_name: form.full_name,
       bio: form.bio || null,
-      skills: form.skills
-        ? form.skills.split(',').map((s) => s.trim()).filter(Boolean)
-        : null,
+     skills: form.skills
+  ? form.skills.split(',').map((s: string) => s.trim()).filter(Boolean)
+  : null,
       hourly_rate: form.hourly_rate ? Number(form.hourly_rate) : null,
     }
 
