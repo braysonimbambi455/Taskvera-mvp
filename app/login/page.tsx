@@ -18,7 +18,10 @@ function LoginForm() {
     e.preventDefault()
     setLoading(true)
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
 
     setLoading(false)
 
@@ -35,8 +38,12 @@ function LoginForm() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-12">
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-2">Welcome Back</h1>
-        <p className="text-center text-gray-500 mb-6">Log in to TaskVera</p>
+        <h1 className="text-3xl font-bold text-center mb-2 text-black">
+          Welcome Back
+        </h1>
+        <p className="text-center text-gray-900 font-medium mb-6">
+          Log in to TaskVera
+        </p>
 
         <form onSubmit={submit} className="space-y-4">
           <input
@@ -45,7 +52,7 @@ function LoginForm() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border rounded-lg p-3"
+            className="w-full border-2 border-gray-400 rounded-lg p-3 text-black font-medium placeholder:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
           <input
             required
@@ -53,19 +60,23 @@ function LoginForm() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border rounded-lg p-3"
+            className="w-full border-2 border-gray-400 rounded-lg p-3 text-black font-medium placeholder:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
           <button
+            type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50"
+            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 disabled:opacity-50 transition-colors"
           >
             {loading ? 'Logging in...' : 'Log In'}
           </button>
         </form>
 
-        <p className="text-center text-gray-500 text-sm mt-6">
+        <p className="text-center text-gray-900 text-sm mt-6 font-medium">
           No account?{' '}
-          <Link href="/register" className="text-indigo-600 font-medium">
+          <Link
+            href="/register"
+            className="text-indigo-700 font-bold hover:underline"
+          >
             Sign up
           </Link>
         </p>
@@ -76,7 +87,11 @@ function LoginForm() {
 
 export default function Login() {
   return (
-    <Suspense fallback={<div className="p-12 text-center">Loading…</div>}>
+    <Suspense
+      fallback={
+        <div className="p-12 text-center text-black font-medium">Loading…</div>
+      }
+    >
       <LoginForm />
     </Suspense>
   )
