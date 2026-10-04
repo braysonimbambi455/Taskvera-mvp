@@ -32,11 +32,14 @@ export default function EditProfileForm({
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
 
+  // Shared input styling: bold black text, bold dark placeholder
+  const inputClass =
+    'w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+
   async function handleAvatar(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Validate
     if (!ALLOWED.includes(file.type)) {
       toast.error('Only JPG, PNG, or WEBP allowed')
       return
@@ -48,7 +51,6 @@ export default function EditProfileForm({
 
     setUploading(true)
 
-    // Path: <userId>/avatar-<timestamp>.<ext>
     const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
     const path = `${userId}/avatar-${Date.now()}.${ext}`
 
@@ -88,9 +90,9 @@ export default function EditProfileForm({
     const updates: any = {
       full_name: form.full_name,
       bio: form.bio || null,
-     skills: form.skills
-  ? form.skills.split(',').map((s: string) => s.trim()).filter(Boolean)
-  : null,
+      skills: form.skills
+        ? form.skills.split(',').map((s: string) => s.trim()).filter(Boolean)
+        : null,
       hourly_rate: form.hourly_rate ? Number(form.hourly_rate) : null,
     }
 
@@ -118,10 +120,13 @@ export default function EditProfileForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white border rounded-2xl p-6">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 bg-white border-2 border-gray-200 rounded-2xl p-6"
+    >
       {/* Avatar uploader */}
-      <div className="flex items-center gap-6">
-        <div className="w-24 h-24 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center flex-shrink-0">
+      <div className="flex items-center gap-6 flex-wrap">
+        <div className="w-24 h-24 rounded-full overflow-hidden bg-teal-100 flex items-center justify-center flex-shrink-0 border-2 border-teal-300">
           {avatarUrl ? (
             <Image
               src={avatarUrl}
@@ -131,7 +136,7 @@ export default function EditProfileForm({
               className="object-cover w-full h-full"
             />
           ) : (
-            <span className="text-3xl font-bold text-indigo-700">
+            <span className="text-3xl font-bold text-teal-800">
               {form.full_name?.charAt(0).toUpperCase() || '?'}
             </span>
           )}
@@ -142,11 +147,11 @@ export default function EditProfileForm({
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
-            className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-50"
+            className="bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-teal-800 disabled:opacity-50"
           >
             {uploading ? 'Uploading…' : 'Change Photo'}
           </button>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-sm text-black font-bold mt-2">
             JPG, PNG, or WEBP · Max 1 MB
           </p>
           <input
@@ -161,62 +166,71 @@ export default function EditProfileForm({
 
       {/* Fields */}
       <div>
-        <label className="block text-sm font-medium mb-1">Full Name</label>
+        <label className="block text-sm font-bold text-black mb-2">
+          Full Name
+        </label>
         <input
           required
           value={form.full_name}
           onChange={(e) => setForm({ ...form, full_name: e.target.value })}
-          className="w-full border rounded-lg p-3"
+          placeholder="Your full name"
+          className={inputClass}
         />
       </div>
 
       {profile.role === 'student' ? (
         <div>
-          <label className="block text-sm font-medium mb-1">University</label>
+          <label className="block text-sm font-bold text-black mb-2">
+            University
+          </label>
           <input
             value={form.university}
             onChange={(e) => setForm({ ...form, university: e.target.value })}
-            className="w-full border rounded-lg p-3"
+            placeholder="e.g. University of Nairobi"
+            className={inputClass}
           />
         </div>
       ) : (
         <div>
-          <label className="block text-sm font-medium mb-1">Company Name</label>
+          <label className="block text-sm font-bold text-black mb-2">
+            Company Name
+          </label>
           <input
             value={form.company_name}
             onChange={(e) => setForm({ ...form, company_name: e.target.value })}
-            className="w-full border rounded-lg p-3"
+            placeholder="e.g. SafariTech Ltd"
+            className={inputClass}
           />
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium mb-1">Bio</label>
+        <label className="block text-sm font-bold text-black mb-2">Bio</label>
         <textarea
           rows={4}
           value={form.bio}
           onChange={(e) => setForm({ ...form, bio: e.target.value })}
           placeholder="Tell clients about yourself…"
-          className="w-full border rounded-lg p-3"
+          className={inputClass}
         />
       </div>
 
       {profile.role === 'student' && (
         <>
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-bold text-black mb-2">
               Skills (comma separated)
             </label>
             <input
               value={form.skills}
               onChange={(e) => setForm({ ...form, skills: e.target.value })}
               placeholder="e.g. Graphic Design, Illustrator, Branding"
-              className="w-full border rounded-lg p-3"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-bold text-black mb-2">
               Hourly Rate (KES)
             </label>
             <input
@@ -224,24 +238,25 @@ export default function EditProfileForm({
               min="0"
               value={form.hourly_rate}
               onChange={(e) => setForm({ ...form, hourly_rate: e.target.value })}
-              className="w-full border rounded-lg p-3"
+              placeholder="e.g. 800"
+              className={inputClass}
             />
           </div>
         </>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <button
           type="button"
           onClick={() => router.back()}
-          className="flex-1 border py-3 rounded-lg font-medium"
+          className="flex-1 border-2 border-gray-400 py-3 rounded-lg font-bold text-black hover:bg-gray-100"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50"
+          className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50"
         >
           {saving ? 'Saving…' : 'Save Changes'}
         </button>
