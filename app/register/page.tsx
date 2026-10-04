@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import PasswordInput from '@/components/PasswordInput'
 
 export default function Register() {
   const router = useRouter()
@@ -18,12 +19,14 @@ export default function Register() {
     company_name: '',
   })
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
+    setError('')
 
-    const { error } = await supabase.auth.signUp({
+    const { error: authError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
@@ -38,8 +41,22 @@ export default function Register() {
 
     setLoading(false)
 
-    if (error) {
-      toast.error(error.message)
+    if (authError) {
+      let msg = authError.message
+      const lower = authError.message.toLowerCase()
+
+      if (lower.includes('already registered') || lower.includes('already exists')) {
+        msg = '⚠️ This email is already registered. Try logging in instead.'
+      } else if (lower.includes('password')) {
+        msg = '🔒 Password must be at least 6 characters.'
+      } else if (lower.includes('valid email')) {
+        msg = '📧 Please enter a valid email address.'
+      } else if (lower.includes('rate limit')) {
+        msg = '⏳ Too many attempts. Try again in a minute.'
+      }
+
+      setError(msg)
+      toast.error(msg)
       return
     }
 
@@ -49,7 +66,7 @@ export default function Register() {
   }
 
   const inputClass =
-    'w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500'
+    'w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-12">
@@ -70,7 +87,7 @@ export default function Register() {
               onClick={() => setRole(r)}
               className={`py-2 rounded-md font-bold transition ${
                 role === r
-                  ? 'bg-white shadow text-teal-700'
+                  ? 'bg-white shadow text-blue-700'
                   : 'text-gray-800 hover:text-black'
               }`}
             >
@@ -90,19 +107,20 @@ export default function Register() {
           <input
             required
             type="email"
+            autoComplete="email"
             placeholder="Email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             className={inputClass}
           />
-          <input
-            required
-            type="password"
-            minLength={6}
-            placeholder="Password (min 6 chars)"
+
+          <PasswordInput
             value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className={inputClass}
+            onChange={(v) => setForm({ ...form, password: v })}
+            placeholder="Password (min 6 chars)"
+            minLength={6}
+            autoComplete="new-password"
+            name="new-password"
           />
 
           {role === 'student' ? (
@@ -121,6 +139,12 @@ export default function Register() {
             />
           )}
 
+          {error && (
+            <div className="bg-red-50 border-2 border-red-400 text-red-800 font-bold text-sm rounded-lg p-3">
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={loading}
@@ -134,7 +158,7 @@ export default function Register() {
           Already have an account?{' '}
           <Link
             href="/login"
-            className="text-teal-700 font-extrabold hover:underline"
+            className="text-blue-700 font-extrabold hover:underline"
           >
             Log in
           </Link>
