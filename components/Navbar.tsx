@@ -53,12 +53,16 @@ export default function Navbar() {
     router.refresh()
   }
 
-  const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(href + '/')
+  // The "/" link should only be "active" on the exact homepage,
+  // not on every page (otherwise Home is always highlighted)
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/'
+    return pathname === href || pathname?.startsWith(href + '/')
+  }
 
   // Bold + high-contrast dark menu links
   const linkClass = (href: string) =>
-    `text-[15px] font-semibold tracking-wide transition-colors duration-150 ${
+    `text-[15px] font-semibold tracking-wide transition-colors duration-150 outline-none focus:outline-none ${
       isActive(href)
         ? 'text-indigo-400'
         : 'text-gray-100 hover:text-indigo-300'
@@ -72,13 +76,18 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="text-2xl font-extrabold text-white tracking-tight hover:text-indigo-300 transition-colors"
+            className="text-2xl font-extrabold text-white tracking-tight hover:text-indigo-300 transition-colors outline-none focus:outline-none"
           >
             Task<span className="text-indigo-400">Vera</span>
           </Link>
 
-          {/* Desktop menu (hidden on mobile) */}
+          {/* Desktop menu */}
           <div className="hidden md:flex items-center gap-6">
+            {/* HOME */}
+            <Link href="/" className={linkClass('/')}>
+              Home
+            </Link>
+
             <Link href="/jobs" className={linkClass('/jobs')}>
               Find Work
             </Link>
@@ -108,7 +117,7 @@ export default function Navbar() {
 
                 <Link
                   href="/notifications"
-                  className={`relative transition-colors ${
+                  className={`relative transition-colors outline-none focus:outline-none ${
                     isActive('/notifications')
                       ? 'text-indigo-400'
                       : 'text-gray-100 hover:text-indigo-300'
@@ -125,7 +134,7 @@ export default function Navbar() {
 
                 <Link
                   href={`/profile/${user.id}`}
-                  className={`text-[15px] font-semibold transition-colors ${
+                  className={`text-[15px] font-semibold transition-colors outline-none focus:outline-none ${
                     pathname?.startsWith('/profile')
                       ? 'text-indigo-400'
                       : 'text-gray-100 hover:text-indigo-300'
@@ -136,7 +145,7 @@ export default function Navbar() {
 
                 <button
                   onClick={logout}
-                  className="text-[15px] font-semibold text-red-400 hover:text-red-300 transition-colors"
+                  className="text-[15px] font-semibold text-red-400 hover:text-red-300 transition-colors outline-none focus:outline-none"
                 >
                   Logout
                 </button>
@@ -145,13 +154,13 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className="text-[15px] font-semibold text-gray-100 hover:text-indigo-300 transition-colors"
+                  className="text-[15px] font-semibold text-gray-100 hover:text-indigo-300 transition-colors outline-none focus:outline-none"
                 >
                   Login
                 </Link>
                 <Link
                   href="/register"
-                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold text-[15px] hover:bg-indigo-500 transition-colors shadow-md"
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold text-[15px] hover:bg-indigo-500 transition-colors shadow-md outline-none focus:outline-none"
                 >
                   Sign Up
                 </Link>
@@ -161,34 +170,58 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden text-white p-2 -mr-2"
+            className="md:hidden text-white p-2 -mr-2 outline-none focus:outline-none"
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
           >
-            {open ? <X size={26} strokeWidth={2.5} /> : <Menu size={26} strokeWidth={2.5} />}
+            {open ? (
+              <X size={26} strokeWidth={2.5} />
+            ) : (
+              <Menu size={26} strokeWidth={2.5} />
+            )}
           </button>
         </div>
 
         {/* Mobile menu */}
         <div
           className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out ${
-            open ? 'max-h-[600px] pb-4' : 'max-h-0'
+            open ? 'max-h-[700px] pb-4' : 'max-h-0'
           }`}
         >
           <div className="flex flex-col gap-1 pt-2 border-t border-gray-800">
-            <Link href="/jobs" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">
+            {/* HOME */}
+            <Link
+              href="/"
+              className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
+            >
+              Home
+            </Link>
+
+            <Link
+              href="/jobs"
+              className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
+            >
               Find Work
             </Link>
-            <Link href="/freelancers" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">
+            <Link
+              href="/freelancers"
+              className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
+            >
               Freelancers
             </Link>
 
             {profile?.role === 'client' && (
               <>
-                <Link href="/post-job" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">
+                <Link
+                  href="/post-job"
+                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
+                >
                   Post a Job
                 </Link>
-                <Link href="/proposals" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">
+                <Link
+                  href="/proposals"
+                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
+                >
                   Proposals
                 </Link>
               </>
@@ -196,15 +229,21 @@ export default function Navbar() {
 
             {user ? (
               <>
-                <Link href="/dashboard" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">
+                <Link
+                  href="/dashboard"
+                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
+                >
                   Dashboard
                 </Link>
-                <Link href="/messages" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">
+                <Link
+                  href="/messages"
+                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
+                >
                   Messages
                 </Link>
                 <Link
                   href="/notifications"
-                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 flex items-center justify-between"
+                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 flex items-center justify-between outline-none focus:outline-none"
                 >
                   <span>Notifications</span>
                   {unread > 0 && (
@@ -215,25 +254,28 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href={`/profile/${user.id}`}
-                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800"
+                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
                 >
                   {profile?.full_name?.split(' ')[0] ?? 'Profile'}
                 </Link>
                 <button
                   onClick={logout}
-                  className="py-3 px-3 rounded-lg text-left text-red-400 font-semibold hover:bg-gray-800"
+                  className="py-3 px-3 rounded-lg text-left text-red-400 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
                 >
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link href="/login" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">
+                <Link
+                  href="/login"
+                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
+                >
                   Login
                 </Link>
                 <Link
                   href="/register"
-                  className="mt-2 bg-indigo-600 text-white text-center py-3 rounded-lg font-bold hover:bg-indigo-500"
+                  className="mt-2 bg-indigo-600 text-white text-center py-3 rounded-lg font-bold hover:bg-indigo-500 outline-none focus:outline-none"
                 >
                   Sign Up
                 </Link>
