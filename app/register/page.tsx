@@ -91,7 +91,7 @@ export default function Register() {
                   : 'text-gray-800 hover:text-black'
               }`}
             >
-              {r === 'student' ? '🎓 Student' : '🏢 Company'}
+              {r === 'student' ? ' Student' : ' Company'}
             </button>
           ))}
         </div>
