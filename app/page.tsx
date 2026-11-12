@@ -116,39 +116,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-extrabold text-black text-center mb-12">
-          How TaskVera Works
-        </h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            {
-              step: '1',
-              title: 'Post or Find a Job',
-              desc: 'Companies post gigs. Students browse and apply.',
-            },
-            {
-              step: '2',
-              title: 'Collaborate & Deliver',
-              desc: 'Chat, share files, and complete the work.',
-            },
-            {
-              step: '3',
-              title: 'Get Paid via M-Pesa',
-              desc: 'Secure payment released on delivery.',
-            },
-          ].map((s) => (
-            <div key={s.step} className="text-center">
-              <div className="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-extrabold mx-auto mb-4 shadow-md">
-                {s.step}
+      {/* HOW IT WORKS - UPDATED FOR MOBILE VISIBILITY */}
+      <section className="bg-white py-20 border-t border-gray-200">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-3xl font-extrabold text-black text-center mb-12">
+            How TaskVera Works
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                step: '1',
+                title: 'Post or Find a Job',
+                desc: 'Companies post gigs. Students browse and apply.',
+              },
+              {
+                step: '2',
+                title: 'Collaborate & Deliver',
+                desc: 'Chat, share files, and complete the work.',
+              },
+              {
+                step: '3',
+                title: 'Get Paid via M-Pesa',
+                desc: 'Secure payment released on delivery.',
+              },
+            ].map((s) => (
+              <div 
+                key={s.step} 
+                className="text-center bg-gray-50 p-8 rounded-2xl border-2 border-gray-300 shadow-sm"
+              >
+                <div className="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-extrabold mx-auto mb-4 shadow-md">
+                  {s.step}
+                </div>
+                <h3 className="font-extrabold text-xl text-black mb-2">
+                  {s.title}
+                </h3>
+                <p className="text-gray-800 font-medium text-base">
+                  {s.desc}
+                </p>
               </div>
-              <h3 className="font-extrabold text-xl text-black mb-2">
-                {s.title}
-              </h3>
-              <p className="text-black font-medium">{s.desc}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
