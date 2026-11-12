@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-  export async function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -23,7 +23,15 @@ import { NextResponse, type NextRequest } from 'next/server'
   const { data: { user } } = await supabase.auth.getUser()
   const path = request.nextUrl.pathname
 
-  const protectedPaths = ['/dashboard', '/post-job', '/messages', '/profile', '/contracts']
+  // 1. Define paths that should NEVER be redirected by the proxy
+  const publicPaths = ['/reset-password', '/forgot-password']
+  
+  // 2. If the path is a password reset flow, let it pass through
+  if (publicPaths.some(p => path === p || path.startsWith(p + '/'))) {
+    return response
+  }
+
+  const protectedPaths = ['/dashboard', '/post-job', '/messages', '/profile', '/contracts', '/proposals']
   const isProtected = protectedPaths.some(p => path.startsWith(p))
 
   if (isProtected && !user) {
