@@ -36,7 +36,7 @@ export async function markAsDelivered(contractId: string) {
 
   // 4. Notify the freelancer
   await notifyUser({
-    userId: contract.student_id,
+    userId: contract.freelancer_id,
     title: '🎉 Job Marked as Delivered',
     body: `The client has marked the job "${contract.jobs.title}" as delivered.`,
     link: `/contracts/${contractId}`,
@@ -79,7 +79,7 @@ export async function cancelContract(contractId: string, reason: string) {
 
   // 4. Notify the freelancer
   await notifyUser({
-    userId: contract.student_id,
+    userId: contract.freelancer_id,
     title: '⚠️ Contract Cancelled',
     body: `The contract for "${contract.jobs.title}" was cancelled by the client. Reason: ${reason}`,
     link: `/contracts/${contractId}`,

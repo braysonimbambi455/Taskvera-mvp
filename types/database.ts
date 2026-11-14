@@ -1,4 +1,4 @@
-export type Role = 'student' | 'client' | 'admin'
+export type Role = 'freelancer' | 'client' | 'admin'
 export type JobStatus = 'open' | 'in_progress' | 'completed' | 'cancelled'
 export type ProposalStatus = 'pending' | 'accepted' | 'rejected' | 'withdrawn'
 export type ContractStatus = 'active' | 'delivered' | 'paid' | 'disputed' | 'cancelled'
@@ -42,7 +42,7 @@ export type Job = {
 export type Proposal = {
   id: string
   job_id: string
-  student_id: string
+  freelancer_id: string
   cover_letter: string
   bid_amount: number
   delivery_days: number
@@ -58,7 +58,7 @@ export type Contract = {
   job_id: string
   proposal_id: string | null
   client_id: string
-  student_id: string
+  freelancer_id: string
   amount: number
   status: ContractStatus
   delivered_at: string | null

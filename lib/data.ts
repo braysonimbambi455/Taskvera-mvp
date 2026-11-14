@@ -129,7 +129,7 @@ export const MOCK_FREELANCERS: Freelancer[] = [
     rating: 4.9,
     jobs_done: 34,
     hourly_rate: 800,
-    bio: 'Third-year design student passionate about bold, African-inspired branding.',
+    bio: 'Third-year design freelancer passionate about bold, African-inspired branding.',
   },
   {
     id: '2',

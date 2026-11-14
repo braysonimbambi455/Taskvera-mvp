@@ -64,8 +64,8 @@ export default async function ProfilePage({
 
                 {/* University / Company — bold black */}
                 <p className="text-sm sm:text-base font-bold text-black mt-2">
-                  {profile.role === 'student'
-                    ? `🎓 ${profile.university ?? 'Student'}`
+                  {profile.role === 'freelancer'
+                    ? `🎓 ${profile.university ?? 'freelancer'}`
                     : `🏢 ${profile.company_name ?? 'Company'}`}
                 </p>
 

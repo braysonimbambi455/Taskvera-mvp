@@ -19,7 +19,7 @@ export default function ProposalForm({ jobId, jobTitle }: { jobId: string; jobTi
 
     const { error } = await supabase.from('proposals').insert({
       job_id: jobId,
-      student_id: user.id,
+      freelancer_id: user.id,
       bid_amount: Number(form.bid_amount),
       delivery_days: Number(form.delivery_days),
       cover_letter: form.cover_letter,

@@ -8,14 +8,14 @@ export default function Home() {
       <section className="bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 text-white">
         <div className="max-w-6xl mx-auto px-6 py-20 md:py-28 text-center">
           <span className="inline-block bg-white/25 text-white font-bold px-4 py-1 rounded-full text-sm mb-6">
-             Built for university students in Kenya
+             Built for  freelancers in Kenya
           </span>
           <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white">
             We Connect You with Skilled Freelancers
           </h1>
           <p className="text-lg md:text-xl text-white font-bold mb-10 max-w-2xl mx-auto">
-            Hire talented university students for short gigs — design, voice-overs,
-            web development, and more. Students earn while they learn.
+            Hire talented  freelancers for short gigs — design, voice-overs,
+            web development and more.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Link
@@ -35,7 +35,7 @@ export default function Home() {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto mt-16">
             {[
-              { n: '100+', label: 'Students' },
+              { n: '100+', label: 'freelancers' },
               { n: '120+', label: 'Companies' },
               { n: 'KES 10,000', label: 'Paid Out' },
             ].map((s) => (
@@ -127,7 +127,7 @@ export default function Home() {
               {
                 step: '1',
                 title: 'Post or Find a Job',
-                desc: 'Companies post gigs. Students browse and apply.',
+                desc: 'Companies post gigs. freelancers browse and apply.',
               },
               {
                 step: '2',
@@ -165,7 +165,7 @@ export default function Home() {
           Ready to earn while you learn?
         </h2>
         <p className="text-white font-bold mb-8 max-w-xl mx-auto">
-          Join thousands of students already earning on TaskVera.
+          Join thousands of freelancers already earning on TaskVera.
         </p>
         <Link
           href="/register"

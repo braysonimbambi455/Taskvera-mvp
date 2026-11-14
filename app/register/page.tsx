@@ -10,7 +10,7 @@ import PasswordInput from '@/components/PasswordInput'
 export default function Register() {
   const router = useRouter()
   const supabase = createClient()
-  const [role, setRole] = useState<'student' | 'client'>('student')
+  const [role, setRole] = useState<'freelancer' | 'client'>('freelancer')
   const [form, setForm] = useState({
     full_name: '',
     email: '',
@@ -33,7 +33,7 @@ export default function Register() {
         data: {
           full_name: form.full_name,
           role,
-          university: role === 'student' ? form.university : null,
+          university: role === 'freelancer' ? form.university : null,
           company_name: role === 'client' ? form.company_name : null,
         },
       },
@@ -80,7 +80,7 @@ export default function Register() {
 
         {/* Role toggle */}
         <div className="grid grid-cols-2 gap-2 bg-gray-200 p-1 rounded-lg mb-6">
-          {(['student', 'client'] as const).map((r) => (
+          {(['freelancer', 'client'] as const).map((r) => (
             <button
               key={r}
               type="button"
@@ -91,7 +91,7 @@ export default function Register() {
                   : 'text-gray-800 hover:text-black'
               }`}
             >
-              {r === 'student' ? ' Student' : ' Company'}
+              {r === 'freelancer' ? ' freelancer' : ' Company'}
             </button>
           ))}
         </div>
@@ -123,7 +123,7 @@ export default function Register() {
             name="new-password"
           />
 
-          {role === 'student' ? (
+          {role === 'freelancer' ? (
             <input
               placeholder="University"
               value={form.university}

@@ -124,17 +124,17 @@ export default async function Dashboard() {
     )
   }
 
-  // ---------------- STUDENT DASHBOARD ----------------
+  // ---------------- freelancer DASHBOARD ----------------
   const { data: myProposals } = await supabase
     .from('proposals')
     .select('*, jobs(title, category, budget_min, budget_max, client_id, profiles(full_name, company_name))')
-    .eq('student_id', user.id)
+    .eq('freelancer_id', user.id)
     .order('created_at', { ascending: false })
 
   const { data: myContracts } = await supabase
     .from('contracts')
     .select('*, jobs(title)')
-    .eq('student_id', user.id)
+    .eq('freelancer_id', user.id)
     .order('created_at', { ascending: false })
 
   const pending = myProposals?.filter(p => p.status === 'pending').length ?? 0
@@ -153,7 +153,7 @@ export default async function Dashboard() {
     <div className="max-w-6xl mx-auto px-6 py-12">
       <div className="flex justify-between items-center flex-wrap gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold">Student Dashboard</h1>
+          <h1 className="text-3xl font-bold">freelancer Dashboard</h1>
           <p className="text-gray-500">Welcome, {profile?.full_name}</p>
         </div>
         <Link

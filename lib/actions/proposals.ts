@@ -38,7 +38,7 @@ export async function acceptProposal(proposalId: string) {
   // 2. Reject all other pending proposals for the same job
   const { data: others } = await supabase
     .from('proposals')
-    .select('id, student_id')
+    .select('id, freelancer_id')
     .eq('job_id', proposal.job_id)
     .neq('id', proposalId)
     .eq('status', 'pending')
@@ -49,11 +49,11 @@ export async function acceptProposal(proposalId: string) {
       .update({ status: 'rejected' })
       .in('id', others.map((o) => o.id))
 
-    // Notify each rejected student
+    // Notify each rejected freelancer
     await Promise.all(
       others.map((o) =>
         notifyUser({
-          userId: o.student_id,
+          userId: o.freelancer_id,
           title: 'Proposal not selected',
           body: `Your proposal for "${job.title}" was not selected.`,
           link: `/jobs/${job.id}`,
@@ -69,7 +69,7 @@ export async function acceptProposal(proposalId: string) {
       job_id: job.id,
       proposal_id: proposalId,
       client_id: job.client_id,
-      student_id: proposal.student_id,
+      freelancer_id: proposal.freelancer_id,
       amount: proposal.bid_amount,
       status: 'active',
     })
@@ -84,9 +84,9 @@ export async function acceptProposal(proposalId: string) {
     .update({ status: 'in_progress' })
     .eq('id', job.id)
 
-  // 5. Notify the accepted student
+  // 5. Notify the accepted freelancer
   await notifyUser({
-    userId: proposal.student_id,
+    userId: proposal.freelancer_id,
     title: '🎉 Your proposal was accepted!',
     body: `You were hired for "${job.title}" at KES ${proposal.bid_amount}.`,
     link: `/contracts/${contract.id}`,
@@ -130,7 +130,7 @@ export async function rejectProposal(proposalId: string) {
   if (error) return { error: error.message }
 
   await notifyUser({
-    userId: proposal.student_id,
+    userId: proposal.freelancer_id,
     title: 'Proposal not selected',
     body: `Your proposal for "${job.title}" was not selected.`,
     link: `/jobs/${job.id}`,

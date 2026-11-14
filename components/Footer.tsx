@@ -14,7 +14,7 @@ export default function Footer() {
         </div>
         
         <div>
-          <h4 className="text-white font-bold mb-3">For Students</h4>
+          <h4 className="text-white font-bold mb-3">For freelancers</h4>
           <ul className="space-y-2 text-sm font-medium">
             <li><Link href="/jobs" className="hover:text-white transition-colors">Find Work</Link></li>
             <li><Link href="/register" className="hover:text-white transition-colors">Sign Up</Link></li>

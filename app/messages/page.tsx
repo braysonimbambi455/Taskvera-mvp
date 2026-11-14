@@ -17,10 +17,10 @@ export default async function MessagesPage() {
       id, status, amount, created_at,
       jobs (title, category),
       client:client_id (id, full_name, avatar_url),
-      student:student_id (id, full_name, avatar_url)
+      freelancer:freelancer_id (id, full_name, avatar_url)
     `
     )
-    .or(`client_id.eq.${user.id},student_id.eq.${user.id}`)
+    .or(`client_id.eq.${user.id},freelancer_id.eq.${user.id}`)
     .order('created_at', { ascending: false })
 
   return (
@@ -33,7 +33,7 @@ export default async function MessagesPage() {
       <div className="space-y-3">
         {contracts?.map((c: any) => {
           const other =
-            c.client?.id === user.id ? c.student : c.client
+            c.client?.id === user.id ? c.freelancer : c.client
           const jobTitle = c.jobs?.title ?? 'Contract'
           return (
             <Link

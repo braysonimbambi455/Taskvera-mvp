@@ -26,7 +26,7 @@ export default async function ProposalsPage() {
     .select(
       `
       *,
-      profiles:student_id (full_name, university, avatar_url, rating),
+      profiles:freelancer_id (full_name, university, avatar_url, rating),
       jobs!inner (id, title, client_id)
     `
     )

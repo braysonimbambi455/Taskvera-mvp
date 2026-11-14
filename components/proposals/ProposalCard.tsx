@@ -13,11 +13,11 @@ export default function ProposalCard({ proposal }: { proposal: any }) {
   const [pending, startTransition] = useTransition()
   const [done, setDone] = useState(false)
 
-  const student = proposal.profiles
+  const freelancer = proposal.profiles
   const job = proposal.jobs
 
   function handleAccept() {
-    if (!confirm(`Hire ${student?.full_name} for "${job?.title}"?`)) return
+    if (!confirm(`Hire ${freelancer?.full_name} for "${job?.title}"?`)) return
 
     startTransition(async () => {
       const res = await acceptProposal(proposal.id)
@@ -32,7 +32,7 @@ export default function ProposalCard({ proposal }: { proposal: any }) {
   }
 
   function handleReject() {
-    if (!confirm(`Reject ${student?.full_name}'s proposal?`)) return
+    if (!confirm(`Reject ${freelancer?.full_name}'s proposal?`)) return
 
     startTransition(async () => {
       const res = await rejectProposal(proposal.id)
@@ -61,27 +61,27 @@ export default function ProposalCard({ proposal }: { proposal: any }) {
       <div className="flex justify-between items-start flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center font-bold text-indigo-700">
-            {student?.avatar_url ? (
+            {freelancer?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={student.avatar_url}
-                alt={student.full_name}
+                src={freelancer.avatar_url}
+                alt={freelancer.full_name}
                 className="w-full h-full object-cover"
               />
             ) : (
-              student?.full_name?.charAt(0).toUpperCase() ?? '?'
+              freelancer?.full_name?.charAt(0).toUpperCase() ?? '?'
             )}
           </div>
           <div>
             <Link
-              href={`/profile/${proposal.student_id}`}
+              href={`/profile/${proposal.freelancer_id}`}
               className="font-semibold hover:text-indigo-600"
             >
-              {student?.full_name ?? 'Freelancer'}
+              {freelancer?.full_name ?? 'Freelancer'}
             </Link>
             <div className="text-xs text-gray-500">
-              {student?.university ?? 'Student'}
-              {student?.rating ? ` · ⭐ ${student.rating}` : ''}
+              {freelancer?.university ?? 'freelancer'}
+              {freelancer?.rating ? ` · ⭐ ${freelancer.rating}` : ''}
             </div>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function ProposalCard({ proposal }: { proposal: any }) {
 
       {proposal.status === 'accepted' && (
         <div className="mt-6 text-sm text-green-700 bg-green-50 rounded-lg p-3">
-          ✅ You hired {student?.full_name}.{' '}
+          ✅ You hired {freelancer?.full_name}.{' '}
           <Link
             href={`/contracts/${proposal.contract_id ?? ''}`}
             className="underline font-medium"

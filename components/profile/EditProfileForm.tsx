@@ -96,7 +96,7 @@ export default function EditProfileForm({
       hourly_rate: form.hourly_rate ? Number(form.hourly_rate) : null,
     }
 
-    if (profile.role === 'student') {
+    if (profile.role === 'freelancer') {
       updates.university = form.university || null
     } else {
       updates.company_name = form.company_name || null
@@ -178,7 +178,7 @@ export default function EditProfileForm({
         />
       </div>
 
-      {profile.role === 'student' ? (
+      {profile.role === 'freelancer' ? (
         <div>
           <label className="block text-sm font-bold text-black mb-2">
             University
@@ -215,7 +215,7 @@ export default function EditProfileForm({
         />
       </div>
 
-      {profile.role === 'student' && (
+      {profile.role === 'freelancer' && (
         <>
           <div>
             <label className="block text-sm font-bold text-black mb-2">

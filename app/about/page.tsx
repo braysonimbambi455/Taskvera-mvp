@@ -10,7 +10,7 @@ export default function AboutPage() {
       <div className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-extrabold text-black mb-6">About TaskVera</h1>
         <p className="text-xl text-gray-700 font-bold max-w-2xl mx-auto">
-          Bridging the gap between talented university students and businesses that need short-term gigs done.
+          Bridging the gap between talented university freelancers and businesses that need short-term gigs done.
         </p>
       </div>
 
@@ -18,7 +18,7 @@ export default function AboutPage() {
         <section className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
           <h2 className="text-2xl font-bold text-black mb-4">Our Mission</h2>
           <p className="text-lg">
-            TaskVera was built to solve two problems: companies struggle to find affordable, high-quality talent for short tasks, and university students struggle to find flexible work that fits around their class schedules. We connect the two, allowing students to earn while they learn, and businesses to get work done efficiently.
+            TaskVera was built to solve two problems: companies struggle to find affordable, high-quality talent for short tasks, and university freelancers struggle to find flexible work that fits around their class schedules. We connect the two, allowing freelancers to earn while they learn, and businesses to get work done efficiently.
           </p>
         </section>
 
@@ -26,12 +26,12 @@ export default function AboutPage() {
           <h2 className="text-2xl font-bold text-black mb-4">How We Do It</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="border border-gray-200 p-6 rounded-xl">
-              <h3 className="font-bold text-lg text-black mb-2">For Students</h3>
+              <h3 className="font-bold text-lg text-black mb-2">For freelancers</h3>
               <p>Build your profile, showcase your skills, browse short jobs, and get paid securely via M-Pesa.</p>
             </div>
             <div className="border border-gray-200 p-6 rounded-xl">
               <h3 className="font-bold text-lg text-black mb-2">For Companies</h3>
-              <p>Post a job, review proposals from talented students, chat in real-time, and hire with confidence.</p>
+              <p>Post a job, review proposals from talented freelancers, chat in real-time, and hire with confidence.</p>
             </div>
           </div>
         </section>

@@ -77,7 +77,7 @@ export default function PostJob() {
     <div className="max-w-2xl mx-auto px-6 py-12">
       <h1 className="text-3xl font-extrabold text-black mb-2">Post a New Job</h1>
       <p className="text-black font-bold mb-8">
-        Find the perfect student for your task in minutes.
+        Find the perfect freelancer for your task in minutes.
       </p>
 
       <form

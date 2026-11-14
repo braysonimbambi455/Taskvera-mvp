@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 export default function UserTable({ users }: { users: any[] }) {
   const router = useRouter()
-  const [filter, setFilter] = useState<'all' | 'student' | 'client'>('all')
+  const [filter, setFilter] = useState<'all' | 'freelancer' | 'client'>('all')
   const [pending, startTransition] = useTransition()
 
   const filteredUsers = users.filter((u) => {
@@ -35,7 +35,7 @@ export default function UserTable({ users }: { users: any[] }) {
     <div className="bg-white border-2 border-gray-200 rounded-2xl overflow-hidden">
       {/* Filters */}
       <div className="p-4 border-b border-gray-200 flex gap-2 bg-gray-50">
-        {(['all', 'student', 'client'] as const).map((f) => (
+        {(['all', 'freelancer', 'client'] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
@@ -45,7 +45,7 @@ export default function UserTable({ users }: { users: any[] }) {
                 : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
             }`}
           >
-            {f === 'all' ? 'All Users' : f === 'student' ? 'Students' : 'Companies'}
+            {f === 'all' ? 'All Users' : f === 'freelancer' ? 'freelancers' : 'Companies'}
           </button>
         ))}
       </div>
@@ -69,7 +69,7 @@ export default function UserTable({ users }: { users: any[] }) {
                   <Link href={`/profile/${u.id}`} className="hover:text-blue-600 hover:underline">
                     {u.full_name}
                   </Link>
-                  {u.role === 'student' && (
+                  {u.role === 'freelancer' && (
                     <div className="text-xs text-gray-500 font-medium">{u.university}</div>
                   )}
                   {u.role === 'client' && (

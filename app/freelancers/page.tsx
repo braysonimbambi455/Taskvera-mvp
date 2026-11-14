@@ -16,7 +16,7 @@ export default async function FreelancersPage({
   let query = supabase
     .from('profiles')
     .select('id, full_name, university, skills, rating, hourly_rate, bio, avatar_url, total_earnings')
-    .eq('role', 'student')
+    .eq('role', 'freelancer')
     .order('rating', { ascending: false })
 
   if (q) query = query.ilike('full_name', `%${q}%`)
@@ -28,7 +28,7 @@ export default async function FreelancersPage({
   const { data: allSkillsRaw } = await supabase
     .from('profiles')
     .select('skills')
-    .eq('role', 'student')
+    .eq('role', 'freelancer')
 
   const allSkills: string[] = Array.from(
     new Set(
@@ -43,7 +43,7 @@ export default async function FreelancersPage({
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Browse Freelancers</h1>
         <p className="text-gray-500">
-          {freelancers?.length ?? 0} talented student{freelancers?.length === 1 ? '' : 's'} ready to work
+          {freelancers?.length ?? 0} talented freelancer{freelancers?.length === 1 ? '' : 's'} ready to work
         </p>
       </div>
 
@@ -114,7 +114,7 @@ export default async function FreelancersPage({
               <div className="min-w-0">
                 <h3 className="font-semibold truncate">{f.full_name}</h3>
                 <p className="text-xs text-gray-500 truncate">
-                  {f.university ?? 'Student'}
+                  {f.university ?? 'freelancer'}
                 </p>
               </div>
             </div>
@@ -167,7 +167,7 @@ export default async function FreelancersPage({
           <div className="col-span-full text-center py-16 text-gray-500">
             <p className="mb-2">No freelancers found yet.</p>
             <p className="text-sm">
-              Students who sign up will appear here automatically.
+              freelancers who sign up will appear here automatically.
             </p>
           </div>
         )}
