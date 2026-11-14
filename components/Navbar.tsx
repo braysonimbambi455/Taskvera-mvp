@@ -53,32 +53,29 @@ export default function Navbar() {
     router.refresh()
   }
 
-  // The "/" link should only be "active" on the exact homepage,
-  // not on every page (otherwise Home is always highlighted)
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/'
     return pathname === href || pathname?.startsWith(href + '/')
   }
 
-  // Bold + high-contrast dark menu links
   const linkClass = (href: string) =>
     `text-[15px] font-semibold tracking-wide transition-colors duration-150 outline-none focus:outline-none ${
       isActive(href)
-        ? 'text-indigo-400'
-        : 'text-gray-100 hover:text-indigo-300'
+        ? 'text-amber-400'
+        : 'text-gray-100 hover:text-amber-300'
     }`
 
   return (
-    <nav className="bg-gray-900 border-b-2 border-indigo-600 sticky top-0 z-50 shadow-lg">
+    <nav className="bg-gray-900 border-b-2 border-amber-500 sticky top-0 z-50 shadow-lg">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Top bar */}
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link
             href="/"
-            className="text-2xl font-extrabold text-white tracking-tight hover:text-indigo-300 transition-colors outline-none focus:outline-none"
+            className="text-2xl font-extrabold text-white tracking-tight hover:text-amber-300 transition-colors outline-none focus:outline-none"
           >
-            Task<span className="text-indigo-400">Vera</span>
+            Task<span className="text-amber-400">Vera</span>
           </Link>
 
           {/* Desktop menu */}
@@ -111,6 +108,14 @@ export default function Navbar() {
                 <Link href="/dashboard" className={linkClass('/dashboard')}>
                   Dashboard
                 </Link>
+                
+                {/* ADMIN LINK */}
+                {profile?.role === 'admin' && (
+                  <Link href="/admin" className={linkClass('/admin')}>
+                    Admin
+                  </Link>
+                )}
+
                 <Link href="/messages" className={linkClass('/messages')}>
                   Messages
                 </Link>
@@ -119,8 +124,8 @@ export default function Navbar() {
                   href="/notifications"
                   className={`relative transition-colors outline-none focus:outline-none ${
                     isActive('/notifications')
-                      ? 'text-indigo-400'
-                      : 'text-gray-100 hover:text-indigo-300'
+                      ? 'text-amber-400'
+                      : 'text-gray-100 hover:text-amber-300'
                   }`}
                   aria-label="Notifications"
                 >
@@ -136,8 +141,8 @@ export default function Navbar() {
                   href={`/profile/${user.id}`}
                   className={`text-[15px] font-semibold transition-colors outline-none focus:outline-none ${
                     pathname?.startsWith('/profile')
-                      ? 'text-indigo-400'
-                      : 'text-gray-100 hover:text-indigo-300'
+                      ? 'text-amber-400'
+                      : 'text-gray-100 hover:text-amber-300'
                   }`}
                 >
                   {profile?.full_name?.split(' ')[0] ?? 'Profile'}
@@ -154,13 +159,13 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className="text-[15px] font-semibold text-gray-100 hover:text-indigo-300 transition-colors outline-none focus:outline-none"
+                  className="text-[15px] font-semibold text-gray-100 hover:text-amber-300 transition-colors outline-none focus:outline-none"
                 >
                   Login
                 </Link>
                 <Link
                   href="/register"
-                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold text-[15px] hover:bg-indigo-500 transition-colors shadow-md outline-none focus:outline-none"
+                  className="bg-amber-500 text-gray-900 px-4 py-2 rounded-lg font-bold text-[15px] hover:bg-amber-400 transition-colors shadow-md outline-none focus:outline-none"
                 >
                   Sign Up
                 </Link>
@@ -185,7 +190,7 @@ export default function Navbar() {
         {/* Mobile menu */}
         <div
           className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out ${
-            open ? 'max-h-[700px] pb-4' : 'max-h-0'
+            open ? 'max-h-[800px] pb-4' : 'max-h-0'
           }`}
         >
           <div className="flex flex-col gap-1 pt-2 border-t border-gray-800">
@@ -235,6 +240,17 @@ export default function Navbar() {
                 >
                   Dashboard
                 </Link>
+                
+                {/* MOBILE ADMIN LINK */}
+                {profile?.role === 'admin' && (
+                  <Link
+                    href="/admin"
+                    className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
+                  >
+                    Admin
+                  </Link>
+                )}
+
                 <Link
                   href="/messages"
                   className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
@@ -275,7 +291,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/register"
-                  className="mt-2 bg-indigo-600 text-white text-center py-3 rounded-lg font-bold hover:bg-indigo-500 outline-none focus:outline-none"
+                  className="mt-2 bg-amber-500 text-gray-900 text-center py-3 rounded-lg font-bold hover:bg-amber-400 outline-none focus:outline-none"
                 >
                   Sign Up
                 </Link>
