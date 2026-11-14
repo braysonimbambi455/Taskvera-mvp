@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -16,20 +16,27 @@ function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  // Check for the deactivated error in the URL
+  useEffect(() => {
+    if (params.get('error') === 'deactivated') {
+      const msg = '🚫 Your account has been deactivated. Please contact support.'
+      setError(msg)
+      toast.error(msg)
+    }
+  }, [params])
+
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    const { error: authError } = await supabase.auth.signInWithPassword({
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
 
-    setLoading(false)
-
     if (authError) {
-      // Friendly error messages
+      setLoading(false)
       let msg = 'Wrong email or password. Please try again.'
       const lower = authError.message.toLowerCase()
 
@@ -39,8 +46,6 @@ function LoginForm() {
         msg = '⚠️ Please verify your email before logging in.'
       } else if (lower.includes('too many requests')) {
         msg = '⏳ Too many attempts. Try again in a minute.'
-      } else if (lower.includes('user not found')) {
-        msg = '❌ No account found with that email.'
       }
 
       setError(msg)
@@ -48,6 +53,25 @@ function LoginForm() {
       return
     }
 
+    // Check if the user is active
+    if (authData.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_active')
+        .eq('id', authData.user.id)
+        .single()
+
+      if (profile && profile.is_active === false) {
+        await supabase.auth.signOut()
+        setLoading(false)
+        const msg = '🚫 Your account has been deactivated. Please contact support.'
+        setError(msg)
+        toast.error(msg)
+        return
+      }
+    }
+
+    setLoading(false)
     toast.success('Welcome back!')
     router.push(params.get('redirect') ?? '/dashboard')
     router.refresh()
