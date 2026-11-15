@@ -35,9 +35,13 @@ export async function cancelContract(contractId: string, reason: string) {
   const { data: contract } = await supabase.from('contracts').select('*, jobs(title)').eq('id', contractId).single()
   if (!contract || contract.client_id !== user.id) return { error: 'Unauthorized' }
 
+  // 1. Cancel the contract
   await supabase.from('contracts').update({ status: 'cancelled' }).eq('id', contractId)
-  await supabase.from('jobs').update({ status: 'cancelled' }).eq('id', contract.job_id)
+  
+  // 2. Re-open the job so the client can hire someone else
+  await supabase.from('jobs').update({ status: 'open' }).eq('id', contract.job_id)
 
+  // 3. Notify the freelancer who was cancelled
   await notifyUser({
     userId: contract.student_id,
     title: '⚠️ Contract Cancelled',
@@ -47,5 +51,6 @@ export async function cancelContract(contractId: string, reason: string) {
 
   revalidatePath(`/contracts/${contractId}`)
   revalidatePath('/dashboard')
+  revalidatePath('/proposals') // Refresh proposals page so they can hire someone else
   return { success: true }
 }
