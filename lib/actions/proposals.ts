@@ -23,8 +23,9 @@ export async function acceptProposal(proposalId: string) {
     return { error: 'You do not own this job' }
   }
 
-  if (proposal.status !== 'pending') {
-    return { error: 'Proposal already processed' }
+  // CHANGED: Block if already accepted, but ALLOW if rejected (re-hire)
+  if (proposal.status === 'accepted') {
+    return { error: 'Proposal already accepted' }
   }
 
   // 1. Mark this proposal accepted
