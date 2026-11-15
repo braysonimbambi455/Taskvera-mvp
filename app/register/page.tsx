@@ -10,12 +10,13 @@ import PasswordInput from '@/components/PasswordInput'
 export default function Register() {
   const router = useRouter()
   const supabase = createClient()
-  const [role, setRole] = useState<'freelancer' | 'client'>('freelancer')
+  
+  // Note: The state is 'student' to match the database, but the UI shows 'Freelancer'
+  const [role, setRole] = useState<'student' | 'client'>('student')
   const [form, setForm] = useState({
     full_name: '',
     email: '',
     password: '',
-    university: '',
     company_name: '',
   })
   const [loading, setLoading] = useState(false)
@@ -33,7 +34,6 @@ export default function Register() {
         data: {
           full_name: form.full_name,
           role,
-          university: role === 'freelancer' ? form.university : null,
           company_name: role === 'client' ? form.company_name : null,
         },
       },
@@ -80,7 +80,7 @@ export default function Register() {
 
         {/* Role toggle */}
         <div className="grid grid-cols-2 gap-2 bg-gray-200 p-1 rounded-lg mb-6">
-          {(['freelancer', 'client'] as const).map((r) => (
+          {(['student', 'client'] as const).map((r) => (
             <button
               key={r}
               type="button"
@@ -91,7 +91,7 @@ export default function Register() {
                   : 'text-gray-800 hover:text-black'
               }`}
             >
-              {r === 'freelancer' ? ' freelancer' : ' Company'}
+              {r === 'student' ? '💼 Freelancer' : '🏢 Company'}
             </button>
           ))}
         </div>
@@ -123,14 +123,8 @@ export default function Register() {
             name="new-password"
           />
 
-          {role === 'freelancer' ? (
-            <input
-              placeholder="University"
-              value={form.university}
-              onChange={(e) => setForm({ ...form, university: e.target.value })}
-              className={inputClass}
-            />
-          ) : (
+          {/* Only companies need to enter their company name at signup */}
+          {role === 'client' && (
             <input
               placeholder="Company name"
               value={form.company_name}
