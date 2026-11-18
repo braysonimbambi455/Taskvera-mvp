@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star } from 'lucide-react'
+import { Star, Briefcase } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -57,19 +57,19 @@ export default async function ProfilePage({
           <div className="flex-1 min-w-[240px]">
             <div className="flex justify-between items-start flex-wrap gap-3">
               <div className="min-w-0">
-                {/* NAME — bold black, responsive */}
+                {/* NAME */}
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-black break-words">
                   {profile.full_name}
                 </h1>
 
-                {/* University / Company — bold black */}
+                {/* University / Company */}
                 <p className="text-sm sm:text-base font-bold text-black mt-2">
-                  {profile.role === 'freelancer'
-                    ? `🎓 ${profile.university ?? 'freelancer'}`
+                  {profile.role === 'student'
+                    ? `💼 ${profile.university ?? 'Freelancer'}`
                     : `🏢 ${profile.company_name ?? 'Company'}`}
                 </p>
 
-                {/* Rating + earnings — bold dark */}
+                {/* Rating + earnings */}
                 <div className="flex items-center gap-2 mt-3 text-sm sm:text-base">
                   <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                   <span className="font-bold text-black">
@@ -91,14 +91,14 @@ export default async function ProfilePage({
               )}
             </div>
 
-            {/* Bio — bold dark */}
+            {/* Bio */}
             {profile.bio && (
               <p className="mt-4 text-sm sm:text-base font-medium text-black whitespace-pre-line">
                 {profile.bio}
               </p>
             )}
 
-            {/* Skills — teal pills */}
+            {/* Skills */}
             {profile.skills && profile.skills.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-4">
                 {profile.skills.map((s: string) => (
@@ -112,15 +112,29 @@ export default async function ProfilePage({
               </div>
             )}
 
-            {/* Rate — bold, blue accent */}
-            {profile.hourly_rate && (
-              <div className="mt-4 text-sm sm:text-base">
-                <span className="text-black font-bold">Rate: </span>
-                <span className="font-extrabold text-blue-700">
-                  KES {profile.hourly_rate}/hr
-                </span>
-              </div>
-            )}
+            {/* Portfolio Link & Rate */}
+            <div className="mt-6 flex flex-wrap items-center gap-4">
+              {profile.portfolio_url && profile.role === 'student' && (
+                <a
+                  href={profile.portfolio_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-gray-900 text-white px-5 py-2 rounded-lg font-bold hover:bg-gray-800 transition shadow-sm"
+                >
+                  <Briefcase className="w-4 h-4" />
+                  View Portfolio
+                </a>
+              )}
+
+              {profile.hourly_rate && (
+                <div className="text-sm sm:text-base">
+                  <span className="text-black font-bold">Rate: </span>
+                  <span className="font-extrabold text-blue-700">
+                    KES {profile.hourly_rate}/hr
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

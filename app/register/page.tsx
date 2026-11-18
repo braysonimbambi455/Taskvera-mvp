@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import PasswordInput from '@/components/PasswordInput'
+import SkillsSelector from '@/components/profile/SkillsSelector'
 
 export default function Register() {
   const router = useRouter()
@@ -18,12 +19,21 @@ export default function Register() {
     email: '',
     password: '',
     company_name: '',
+    portfolio_url: '',
   })
+  const [skills, setSkills] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
+
+    // Validation: Freelancers must select at least one skill
+    if (role === 'student' && skills.length === 0) {
+      setError('⚠️ Please select at least one skill from the list.')
+      return
+    }
+
     setLoading(true)
     setError('')
 
@@ -35,6 +45,8 @@ export default function Register() {
           full_name: form.full_name,
           role,
           company_name: role === 'client' ? form.company_name : null,
+          skills: role === 'student' ? skills : null,
+          portfolio_url: role === 'student' ? form.portfolio_url : null,
         },
       },
     })
@@ -123,14 +135,36 @@ export default function Register() {
             name="new-password"
           />
 
-          {/* Only companies need to enter their company name at signup */}
-          {role === 'client' && (
+          {/* Conditional fields based on role */}
+          {role === 'client' ? (
             <input
+              required
               placeholder="Company name"
               value={form.company_name}
               onChange={(e) => setForm({ ...form, company_name: e.target.value })}
               className={inputClass}
             />
+          ) : (
+            <div className="space-y-4 border-t-2 border-gray-100 pt-4 mt-4">
+              <div>
+                <label className="block text-sm font-bold text-black mb-2">
+                  Select Your Skills (Required)
+                </label>
+                <SkillsSelector selectedSkills={skills} onChange={setSkills} />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-black mb-2">
+                  Portfolio Link (Optional)
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://yourportfolio.com"
+                  value={form.portfolio_url}
+                  onChange={(e) => setForm({ ...form, portfolio_url: e.target.value })}
+                  className={inputClass}
+                />
+              </div>
+            </div>
           )}
 
           {error && (
