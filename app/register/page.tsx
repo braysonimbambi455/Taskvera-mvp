@@ -37,7 +37,8 @@ export default function Register() {
     setLoading(true)
     setError('')
 
-    const { error: authError } = await supabase.auth.signUp({
+    // 1. Create the Auth User
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
@@ -45,15 +46,12 @@ export default function Register() {
           full_name: form.full_name,
           role,
           company_name: role === 'client' ? form.company_name : null,
-          skills: role === 'student' ? skills : null,
-          portfolio_url: role === 'student' ? form.portfolio_url : null,
         },
       },
     })
 
-    setLoading(false)
-
     if (authError) {
+      setLoading(false)
       let msg = authError.message
       const lower = authError.message.toLowerCase()
 
@@ -72,6 +70,23 @@ export default function Register() {
       return
     }
 
+    // 2. Explicitly save the skills and portfolio to the newly created profile
+    if (authData.user && role === 'student') {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ 
+          skills: skills,
+          portfolio_url: form.portfolio_url || null
+        })
+        .eq('id', authData.user.id)
+
+      if (profileError) {
+        console.error('Failed to save skills:', profileError)
+        toast.error('Account created, but skills failed to save. Please update your profile.')
+      }
+    }
+
+    setLoading(false)
     toast.success('Account created!')
     router.push('/dashboard')
     router.refresh()
