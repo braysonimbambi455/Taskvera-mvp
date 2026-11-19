@@ -37,7 +37,7 @@ export default async function ProfilePage({
       <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 sm:p-8">
         <div className="flex items-start gap-6 flex-wrap">
           {/* Avatar */}
-          <div className="w-24 h-24 rounded-full overflow-hidden bg-teal-100 flex items-center justify-center flex-shrink-0 border-2 border-teal-300">
+          <div className="w-24 h-24 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center flex-shrink-0 border-2 border-blue-300">
             {profile.avatar_url ? (
               <Image
                 src={profile.avatar_url}
@@ -47,7 +47,7 @@ export default async function ProfilePage({
                 className="object-cover w-full h-full"
               />
             ) : (
-              <span className="text-3xl font-extrabold text-teal-800">
+              <span className="text-3xl font-extrabold text-blue-800">
                 {profile.full_name?.charAt(0).toUpperCase()}
               </span>
             )}
@@ -64,7 +64,7 @@ export default async function ProfilePage({
 
                 {/* University / Company */}
                 <p className="text-sm sm:text-base font-bold text-black mt-2">
-                  {profile.role === 'student'
+                  {profile.role === 'freelancer'
                     ? `💼 ${profile.university ?? 'Freelancer'}`
                     : `🏢 ${profile.company_name ?? 'Company'}`}
                 </p>
@@ -104,7 +104,7 @@ export default async function ProfilePage({
                 {profile.skills.map((s: string) => (
                   <span
                     key={s}
-                    className="text-xs sm:text-sm font-bold bg-teal-100 text-teal-900 px-3 py-1 rounded-full"
+                    className="text-xs sm:text-sm font-bold bg-blue-100 text-blue-900 px-3 py-1 rounded-full"
                   >
                     {s}
                   </span>
@@ -114,7 +114,7 @@ export default async function ProfilePage({
 
             {/* Portfolio Link & Rate */}
             <div className="mt-6 flex flex-wrap items-center gap-4">
-              {profile.portfolio_url && profile.role === 'student' && (
+              {profile.portfolio_url && profile.role === 'freelancer' && (
                 <a
                   href={profile.portfolio_url}
                   target="_blank"
@@ -151,7 +151,7 @@ export default async function ProfilePage({
               className="border-2 border-gray-200 rounded-lg p-4 bg-white"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-teal-100 flex items-center justify-center text-sm font-bold text-teal-800">
+                <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-sm font-bold text-blue-800">
                   {r.profiles?.full_name?.charAt(0) ?? '?'}
                 </div>
                 <div>
