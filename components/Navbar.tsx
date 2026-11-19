@@ -134,19 +134,17 @@ export default function Navbar() {
                   )}
                 </Link>
 
-                {/* FIXED: Wait for profile.id before rendering the link */}
-                {profile?.id && (
-                  <Link
-                    href={`/profile/${profile.id}`}
-                    className={`text-[15px] font-semibold transition-colors outline-none focus:outline-none ${
-                      pathname?.startsWith('/profile')
-                        ? 'text-amber-400'
-                        : 'text-gray-100 hover:text-amber-300'
-                    }`}
-                  >
-                    {profile?.full_name?.split(' ')[0] ?? 'Profile'}
-                  </Link>
-                )}
+                {/* PROFILE LINK FIXED: Uses profile.id if available, otherwise user.id */}
+                <Link
+                  href={`/profile/${profile?.id || user.id}`}
+                  className={`text-[15px] font-semibold transition-colors outline-none focus:outline-none ${
+                    pathname?.startsWith('/profile')
+                      ? 'text-amber-400'
+                      : 'text-gray-100 hover:text-amber-300'
+                  }`}
+                >
+                  {profile?.full_name?.split(' ')[0] ?? 'Profile'}
+                </Link>
 
                 <button
                   onClick={logout}
@@ -255,6 +253,7 @@ export default function Navbar() {
                 >
                   Messages
                 </Link>
+                
                 <Link
                   href="/notifications"
                   className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 flex items-center justify-between outline-none focus:outline-none"
@@ -266,16 +265,14 @@ export default function Navbar() {
                     </span>
                   )}
                 </Link>
-                
-                {/* FIXED: Wait for profile.id before rendering the link */}
-                {profile?.id && (
-                  <Link
-                    href={`/profile/${profile.id}`}
-                    className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
-                  >
-                    {profile?.full_name?.split(' ')[0] ?? 'Profile'}
-                  </Link>
-                )}
+
+                {/* MOBILE PROFILE LINK FIXED */}
+                <Link
+                  href={`/profile/${profile?.id || user.id}`}
+                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
+                >
+                  {profile?.full_name?.split(' ')[0] ?? 'Profile'}
+                </Link>
 
                 <button
                   onClick={logout}
