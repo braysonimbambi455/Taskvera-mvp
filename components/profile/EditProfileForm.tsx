@@ -27,12 +27,10 @@ export default function EditProfileForm({
     company_name: profile.company_name ?? '',
     bio: profile.bio ?? '',
     hourly_rate: profile.hourly_rate ?? '',
-    portfolio_url: profile.portfolio_url ?? '', // NEW: Portfolio Link
+    portfolio_url: profile.portfolio_url ?? '',
   })
   
-  // NEW: Store skills as an array instead of a comma-separated string
   const [skills, setSkills] = useState<string[]>(profile.skills ?? [])
-
   const [avatarUrl, setAvatarUrl] = useState<string | null>(profile.avatar_url)
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -90,8 +88,8 @@ export default function EditProfileForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     
-    // Validation
-    if (profile.role === 'student' && skills.length === 0) {
+    // Validation: Check for 'freelancer'
+    if (profile.role === 'freelancer' && skills.length === 0) {
       toast.error('Please select at least one skill.')
       return
     }
@@ -101,13 +99,13 @@ export default function EditProfileForm({
     const updates: any = {
       full_name: form.full_name,
       bio: form.bio || null,
-      skills: skills.length > 0 ? skills : null, // Use the array
+      skills: skills.length > 0 ? skills : null,
       hourly_rate: form.hourly_rate ? Number(form.hourly_rate) : null,
-      portfolio_url: form.portfolio_url || null, // Add portfolio
+      portfolio_url: form.portfolio_url || null,
     }
 
-    // FIXED: Check for 'student' not 'freelancer'
-    if (profile.role === 'student') {
+    // FIXED: Check for 'freelancer'
+    if (profile.role === 'freelancer') {
       updates.university = form.university || null
     } else {
       updates.company_name = form.company_name || null
@@ -137,7 +135,7 @@ export default function EditProfileForm({
     >
       {/* Avatar uploader */}
       <div className="flex items-center gap-6 flex-wrap">
-        <div className="w-24 h-24 rounded-full overflow-hidden bg-teal-100 flex items-center justify-center flex-shrink-0 border-2 border-teal-300">
+        <div className="w-24 h-24 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center flex-shrink-0 border-2 border-blue-300">
           {avatarUrl ? (
             <Image
               src={avatarUrl}
@@ -147,7 +145,7 @@ export default function EditProfileForm({
               className="object-cover w-full h-full"
             />
           ) : (
-            <span className="text-3xl font-bold text-teal-800">
+            <span className="text-3xl font-bold text-blue-800">
               {form.full_name?.charAt(0).toUpperCase() || '?'}
             </span>
           )}
@@ -158,7 +156,7 @@ export default function EditProfileForm({
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
-            className="bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-teal-800 disabled:opacity-50"
+            className="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-800 disabled:opacity-50"
           >
             {uploading ? 'Uploading…' : 'Change Photo'}
           </button>
@@ -189,8 +187,8 @@ export default function EditProfileForm({
         />
       </div>
 
-      {/* FIXED: Check for 'student' not 'freelancer' */}
-      {profile.role === 'student' ? (
+      {/* FIXED: Check for 'freelancer' */}
+      {profile.role === 'freelancer' ? (
         <div>
           <label className="block text-sm font-bold text-black mb-2">
             University / College (Optional)
@@ -227,7 +225,7 @@ export default function EditProfileForm({
         />
       </div>
 
-      {profile.role === 'student' && (
+      {profile.role === 'freelancer' && (
         <>
           <div>
             <label className="block text-sm font-bold text-black mb-2">
