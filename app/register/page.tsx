@@ -12,8 +12,8 @@ export default function Register() {
   const router = useRouter()
   const supabase = createClient()
   
-  // Note: The state is 'student' to match the database, but the UI shows 'Freelancer'
-  const [role, setRole] = useState<'student' | 'client'>('student')
+  // State now perfectly matches the database constraint
+  const [role, setRole] = useState<'freelancer' | 'client'>('freelancer')
   const [form, setForm] = useState({
     full_name: '',
     email: '',
@@ -29,7 +29,7 @@ export default function Register() {
     e.preventDefault()
 
     // Validation: Freelancers must select at least one skill
-    if (role === 'student' && skills.length === 0) {
+    if (role === 'freelancer' && skills.length === 0) {
       setError('⚠️ Please select at least one skill from the list.')
       return
     }
@@ -44,7 +44,7 @@ export default function Register() {
       options: {
         data: {
           full_name: form.full_name,
-          role,
+          role, // This will now send 'freelancer' or 'client'
           company_name: role === 'client' ? form.company_name : null,
         },
       },
@@ -71,7 +71,7 @@ export default function Register() {
     }
 
     // 2. Explicitly save the skills and portfolio to the newly created profile
-    if (authData.user && role === 'student') {
+    if (authData.user && role === 'freelancer') {
       const { error: profileError } = await supabase
         .from('profiles')
         .update({ 
@@ -107,7 +107,7 @@ export default function Register() {
 
         {/* Role toggle */}
         <div className="grid grid-cols-2 gap-2 bg-gray-200 p-1 rounded-lg mb-6">
-          {(['student', 'client'] as const).map((r) => (
+          {(['freelancer', 'client'] as const).map((r) => (
             <button
               key={r}
               type="button"
@@ -118,7 +118,7 @@ export default function Register() {
                   : 'text-gray-800 hover:text-black'
               }`}
             >
-              {r === 'student' ? '💼 Freelancer' : '🏢 Company'}
+              {r === 'freelancer' ? '💼 Freelancer' : '🏢 Company'}
             </button>
           ))}
         </div>
