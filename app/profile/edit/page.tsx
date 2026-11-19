@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import EditProfileForm from '@/components/profile/EditProfileForm'
 
 export const dynamic = 'force-dynamic'
@@ -20,10 +21,18 @@ export default async function EditProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-2">Edit Profile</h1>
-      <p className="text-gray-500 mb-8">
+      <Link 
+        href={`/profile/${user.id}`} 
+        className="text-blue-600 font-bold text-sm hover:underline mb-4 inline-block"
+      >
+        ← Back to Profile
+      </Link>
+      
+      <h1 className="text-3xl font-extrabold text-black mb-2">Edit Profile</h1>
+      <p className="text-gray-800 font-bold mb-8">
         Keep your profile fresh — it's the first thing clients see.
       </p>
+      
       <EditProfileForm profile={profile} userId={user.id} />
     </div>
   )
