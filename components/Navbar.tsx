@@ -42,7 +42,6 @@ export default function Navbar() {
     return () => sub.subscription.unsubscribe()
   }, [pathname])
 
-  // Close mobile menu on route change
   useEffect(() => {
     setOpen(false)
   }, [pathname])
@@ -80,7 +79,6 @@ export default function Navbar() {
 
           {/* Desktop menu */}
           <div className="hidden md:flex items-center gap-6">
-            {/* HOME */}
             <Link href="/" className={linkClass('/')}>
               Home
             </Link>
@@ -109,7 +107,6 @@ export default function Navbar() {
                   Dashboard
                 </Link>
                 
-                {/* ADMIN LINK */}
                 {profile?.role === 'admin' && (
                   <Link href="/admin" className={linkClass('/admin')}>
                     Admin
@@ -194,7 +191,6 @@ export default function Navbar() {
           }`}
         >
           <div className="flex flex-col gap-1 pt-2 border-t border-gray-800">
-            {/* HOME */}
             <Link
               href="/"
               className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
@@ -241,7 +237,6 @@ export default function Navbar() {
                   Dashboard
                 </Link>
                 
-                {/* MOBILE ADMIN LINK */}
                 {profile?.role === 'admin' && (
                   <Link
                     href="/admin"
