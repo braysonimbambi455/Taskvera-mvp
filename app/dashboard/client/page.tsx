@@ -22,33 +22,39 @@ export default async function ClientDashboard() {
     redirect('/dashboard/freelancer')
   }
 
-  // Fetch Jobs
+  // 1. Fetch Jobs Posted by this Client
   const { data: jobs } = await supabase
     .from('jobs')
     .select('*')
     .eq('client_id', user.id)
     .order('created_at', { ascending: false })
 
-  // Fetch Proposals
+  // 2. Fetch ALL Proposals for this Client's Jobs
   const { data: proposals } = await supabase
     .from('proposals')
-    .select('*, profiles(full_name, university, rating), jobs!inner(title, client_id)')
+    .select('*, profiles(full_name, university, rating, avatar_url), jobs!inner(title, client_id)')
     .eq('jobs.client_id', user.id)
     .order('created_at', { ascending: false })
-    .limit(10)
 
+  // 3. Calculate Stats
   const openJobs = jobs?.filter(j => j.status === 'open').length ?? 0
-  const inProgress = jobs?.filter(j => j.status === 'in_progress').length ?? 0
-  const totalProposals = proposals?.length ?? 0
+  const inProgressJobs = jobs?.filter(j => j.status === 'in_progress').length ?? 0
+  const pendingProposals = proposals?.filter(p => p.status === 'pending').length ?? 0
+
+  const stats = [
+    { label: 'Open Jobs', value: openJobs, color: 'text-blue-600' },
+    { label: 'Jobs In Progress', value: inProgressJobs, color: 'text-yellow-600' },
+    { label: 'Total Proposals', value: proposals?.length ?? 0, color: 'text-green-600' },
+    { label: 'New Proposals', value: pendingProposals, color: 'text-purple-600' },
+  ]
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
+      {/* Header */}
       <div className="flex justify-between items-center flex-wrap gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-extrabold text-black">Client Dashboard</h1>
-          <p className="text-gray-800 font-bold">
-            Welcome, {profile.company_name || profile.full_name}
-          </p>
+          <p className="text-gray-800 font-bold">Welcome, {profile?.company_name || profile?.full_name}</p>
         </div>
         <Link
           href="/post-job"
@@ -58,74 +64,100 @@ export default async function ClientDashboard() {
         </Link>
       </div>
 
+      {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-        <div className="border-2 border-gray-200 rounded-xl p-5 bg-white">
-          <div className="text-sm font-bold text-gray-600">Open Jobs</div>
-          <div className="text-2xl font-extrabold mt-1 text-blue-600">{openJobs}</div>
-        </div>
-        <div className="border-2 border-gray-200 rounded-xl p-5 bg-white">
-          <div className="text-sm font-bold text-gray-600">In Progress</div>
-          <div className="text-2xl font-extrabold mt-1 text-yellow-600">{inProgress}</div>
-        </div>
-        <div className="border-2 border-gray-200 rounded-xl p-5 bg-white">
-          <div className="text-sm font-bold text-gray-600">Proposals</div>
-          <div className="text-2xl font-extrabold mt-1 text-green-600">{totalProposals}</div>
-        </div>
+        {stats.map((stat) => (
+          <div key={stat.label} className="border-2 border-gray-200 rounded-xl p-5 bg-white shadow-sm">
+            <div className="text-sm font-bold text-gray-600">{stat.label}</div>
+            <div className={`text-2xl font-extrabold mt-1 ${stat.color}`}>{stat.value}</div>
+          </div>
+        ))}
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
-        {/* Recent Jobs */}
+        
+        {/* POSTED JOBS SECTION */}
         <div>
-          <h2 className="text-xl font-extrabold text-black mb-4">Your Recent Jobs</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-extrabold text-black">Your Posted Jobs</h2>
+            <Link href="/jobs" className="text-blue-600 font-bold hover:underline text-sm">View All</Link>
+          </div>
           <div className="space-y-3">
-            {jobs?.slice(0, 5).map(j => (
+            {jobs?.slice(0, 5).map((job) => (
               <Link
-                key={j.id}
-                href={`/jobs/${j.id}`}
-                className="block border-2 border-gray-200 rounded-lg p-4 hover:bg-gray-50 bg-white transition"
+                key={job.id}
+                href={`/jobs/${job.id}`}
+                className="block border-2 border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition bg-white"
               >
-                <div className="flex justify-between items-start">
-                  <span className="font-bold text-black">{j.title}</span>
-                  <span className="text-xs text-gray-500 font-bold">{timeAgo(j.created_at)}</span>
+                <div className="flex justify-between items-start mb-1">
+                  <span className="font-bold text-black text-lg">{job.title}</span>
+                  <span className={`text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md ${
+                    job.status === 'open' ? 'bg-green-100 text-green-800' :
+                    job.status === 'in_progress' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {job.status.replace('_', ' ')}
+                  </span>
                 </div>
-                <div className="text-sm text-gray-700 font-medium mt-1">
-                  {j.category} · {formatKES(j.budget_min)} – {formatKES(j.budget_max)}
+                <div className="text-sm font-bold text-gray-600">
+                  {job.category} · {formatKES(job.budget_min)} – {formatKES(job.budget_max)}
+                </div>
+                <div className="text-xs font-bold text-gray-400 mt-2">
+                  Posted {timeAgo(job.created_at)}
                 </div>
               </Link>
             ))}
-            {!jobs?.length && (
-              <p className="text-gray-600 font-bold text-sm">
-                No jobs yet. <Link href="/post-job" className="text-blue-600 hover:underline">Post your first job</Link>
-              </p>
+            {jobs?.length === 0 && (
+              <div className="text-center py-10 border-2 border-gray-200 rounded-lg bg-gray-50">
+                <p className="text-gray-600 font-bold mb-2">You haven't posted any jobs yet.</p>
+                <Link href="/post-job" className="text-blue-600 font-bold hover:underline">Post your first job</Link>
+              </div>
             )}
           </div>
         </div>
 
-        {/* Recent Proposals */}
+        {/* PROPOSALS SECTION */}
         <div>
-          <h2 className="text-xl font-extrabold text-black mb-4">Recent Proposals</h2>
+          <h2 className="text-xl font-extrabold text-black mb-4">Recent Proposals Received</h2>
           <div className="space-y-3">
-            {proposals?.map((p: any) => (
-              <div key={p.id} className="border-2 border-gray-200 rounded-lg p-4 bg-white">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="font-bold text-black">{p.profiles?.full_name}</div>
-                    <div className="text-xs text-gray-600 font-medium">
-                      {p.profiles?.university} · ⭐ {p.profiles?.rating ?? 0}
+            {proposals?.slice(0, 5).map((proposal: any) => (
+              <div key={proposal.id} className="border-2 border-gray-200 rounded-lg p-4 bg-white">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-800">
+                      {proposal.profiles?.full_name?.charAt(0) || '?'}
+                    </div>
+                    <div>
+                      <div className="font-bold text-black">{proposal.profiles?.full_name}</div>
+                      <div className="text-xs text-gray-600 font-bold">
+                        {proposal.profiles?.university || 'Freelancer'} · ⭐ {proposal.profiles?.rating ?? 0}
+                      </div>
                     </div>
                   </div>
-                  <div className="text-sm font-extrabold text-blue-700">
-                    {formatKES(p.bid_amount)}
+                  <div className="text-right">
+                    <div className="text-sm font-extrabold text-blue-700">{formatKES(proposal.bid_amount)}</div>
+                    <div className="text-xs text-gray-500 font-bold">{proposal.delivery_days} days</div>
                   </div>
                 </div>
-                <div className="text-xs text-gray-600 font-bold mt-2">For: {p.jobs?.title}</div>
+                <div className="text-xs font-bold text-gray-500 bg-gray-50 p-2 rounded">
+                  For: {proposal.jobs?.title}
+                </div>
+                <Link 
+                  href={`/jobs/${proposal.job_id}`} 
+                  className="block text-center mt-3 bg-blue-50 text-blue-700 py-2 rounded-lg font-bold text-sm hover:bg-blue-100"
+                >
+                  View Proposal & Hire
+                </Link>
               </div>
             ))}
-            {!proposals?.length && (
-              <p className="text-gray-600 font-bold text-sm">No proposals yet.</p>
+            {proposals?.length === 0 && (
+              <div className="text-center py-10 border-2 border-gray-200 rounded-lg bg-gray-50">
+                <p className="text-gray-600 font-bold mb-2">No proposals received yet.</p>
+                <p className="text-sm text-gray-500 font-medium">Freelancers will apply once you post a job.</p>
+              </div>
             )}
           </div>
         </div>
+
       </div>
     </div>
   )

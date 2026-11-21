@@ -15,6 +15,7 @@ export default function Navbar() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [unread, setUnread] = useState(0)
   const [open, setOpen] = useState(false)
+  const [loadingProfile, setLoadingProfile] = useState(true)
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data }) => {
@@ -34,15 +35,16 @@ export default function Navbar() {
           .eq('read', false)
         setUnread(count ?? 0)
       }
+      setLoadingProfile(false)
     })
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_, s) =>
+    const { data: sub } = supabase.auth.onAuthStateChange((_, s) => {
       setUser(s?.user ?? null)
-    )
+      if (!s?.user) setProfile(null)
+    })
     return () => sub.subscription.unsubscribe()
   }, [pathname])
 
-  // Close mobile menu on route change
   useEffect(() => {
     setOpen(false)
   }, [pathname])
@@ -61,69 +63,52 @@ export default function Navbar() {
   const linkClass = (href: string) =>
     `text-[15px] font-semibold tracking-wide transition-colors duration-150 outline-none focus:outline-none ${
       isActive(href)
-        ? 'text-indigo-400'
-        : 'text-gray-100 hover:text-indigo-300'
+        ? 'text-amber-400'
+        : 'text-gray-100 hover:text-amber-300'
     }`
 
-  // Dynamically determine the dashboard link based on role
-  const dashboardLink = profile?.role === 'client' ? '/dashboard/client' : '/dashboard/freelancer'
+  // THE FIX: If profile is still loading, send them to the generic /dashboard 
+  // router (which we built earlier to check the role and redirect).
+  const dashboardLink = loadingProfile 
+    ? '/dashboard' 
+    : (profile?.role === 'client' ? '/dashboard/client' : '/dashboard/freelancer')
 
   return (
-    <nav className="bg-gray-900 border-b-2 border-indigo-600 sticky top-0 z-50 shadow-lg">
+    <nav className="bg-gray-900 border-b-2 border-amber-500 sticky top-0 z-50 shadow-lg">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        {/* Top bar */}
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
           <Link
             href="/"
-            className="text-2xl font-extrabold text-white tracking-tight hover:text-indigo-300 transition-colors outline-none focus:outline-none"
+            className="text-2xl font-extrabold text-white tracking-tight hover:text-amber-300 transition-colors outline-none focus:outline-none"
           >
-            Task<span className="text-indigo-400">Vera</span>
+            Task<span className="text-amber-400">Vera</span>
           </Link>
 
           {/* Desktop menu */}
           <div className="hidden md:flex items-center gap-6">
-            <Link href="/" className={linkClass('/')}>
-              Home
-            </Link>
-
-            <Link href="/jobs" className={linkClass('/jobs')}>
-              Find Work
-            </Link>
-            <Link href="/freelancers" className={linkClass('/freelancers')}>
-              Freelancers
-            </Link>
+            <Link href="/" className={linkClass('/')}>Home</Link>
+            <Link href="/jobs" className={linkClass('/jobs')}>Find Work</Link>
+            <Link href="/freelancers" className={linkClass('/freelancers')}>Freelancers</Link>
 
             {profile?.role === 'client' && (
               <>
-                <Link href="/post-job" className={linkClass('/post-job')}>
-                  Post a Job
-                </Link>
-                <Link href="/proposals" className={linkClass('/proposals')}>
-                  Proposals
-                </Link>
+                <Link href="/post-job" className={linkClass('/post-job')}>Post a Job</Link>
+                <Link href="/proposals" className={linkClass('/proposals')}>Proposals</Link>
               </>
             )}
 
             {user ? (
               <>
-                {/* DYNAMIC DASHBOARD LINK */}
                 <Link href={dashboardLink} className={linkClass(dashboardLink)}>
                   Dashboard
                 </Link>
-                
-                <Link href="/messages" className={linkClass('/messages')}>
-                  Messages
-                </Link>
+                <Link href="/messages" className={linkClass('/messages')}>Messages</Link>
 
                 <Link
                   href="/notifications"
                   className={`relative transition-colors outline-none focus:outline-none ${
-                    isActive('/notifications')
-                      ? 'text-indigo-400'
-                      : 'text-gray-100 hover:text-indigo-300'
+                    isActive('/notifications') ? 'text-amber-400' : 'text-gray-100 hover:text-amber-300'
                   }`}
-                  aria-label="Notifications"
                 >
                   <Bell className="w-5 h-5" strokeWidth={2.5} />
                   {unread > 0 && (
@@ -136,33 +121,22 @@ export default function Navbar() {
                 <Link
                   href={`/profile/${user.id}`}
                   className={`text-[15px] font-semibold transition-colors outline-none focus:outline-none ${
-                    pathname?.startsWith('/profile')
-                      ? 'text-indigo-400'
-                      : 'text-gray-100 hover:text-indigo-300'
+                    pathname?.startsWith('/profile') ? 'text-amber-400' : 'text-gray-100 hover:text-amber-300'
                   }`}
                 >
                   {profile?.full_name?.split(' ')[0] ?? 'Profile'}
                 </Link>
 
-                <button
-                  onClick={logout}
-                  className="text-[15px] font-semibold text-red-400 hover:text-red-300 transition-colors outline-none focus:outline-none"
-                >
+                <button onClick={logout} className="text-[15px] font-semibold text-red-400 hover:text-red-300 transition-colors outline-none focus:outline-none">
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link
-                  href="/login"
-                  className="text-[15px] font-semibold text-gray-100 hover:text-indigo-300 transition-colors outline-none focus:outline-none"
-                >
+                <Link href="/login" className="text-[15px] font-semibold text-gray-100 hover:text-amber-300 transition-colors outline-none focus:outline-none">
                   Login
                 </Link>
-                <Link
-                  href="/register"
-                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold text-[15px] hover:bg-indigo-500 transition-colors shadow-md outline-none focus:outline-none"
-                >
+                <Link href="/register" className="bg-amber-500 text-gray-900 px-4 py-2 rounded-lg font-bold text-[15px] hover:bg-amber-400 transition-colors shadow-md outline-none focus:outline-none">
                   Sign Up
                 </Link>
               </>
@@ -173,114 +147,42 @@ export default function Navbar() {
           <button
             className="md:hidden text-white p-2 -mr-2 outline-none focus:outline-none"
             onClick={() => setOpen(!open)}
-            aria-label="Toggle menu"
           >
-            {open ? (
-              <X size={26} strokeWidth={2.5} />
-            ) : (
-              <Menu size={26} strokeWidth={2.5} />
-            )}
+            {open ? <X size={26} strokeWidth={2.5} /> : <Menu size={26} strokeWidth={2.5} />}
           </button>
         </div>
 
         {/* Mobile menu */}
-        <div
-          className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out ${
-            open ? 'max-h-[700px] pb-4' : 'max-h-0'
-          }`}
-        >
+        <div className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out ${open ? 'max-h-[800px] pb-4' : 'max-h-0'}`}>
           <div className="flex flex-col gap-1 pt-2 border-t border-gray-800">
-            <Link
-              href="/"
-              className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
-            >
-              Home
-            </Link>
-
-            <Link
-              href="/jobs"
-              className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
-            >
-              Find Work
-            </Link>
-            <Link
-              href="/freelancers"
-              className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
-            >
-              Freelancers
-            </Link>
+            <Link href="/" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">Home</Link>
+            <Link href="/jobs" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">Find Work</Link>
+            <Link href="/freelancers" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">Freelancers</Link>
 
             {profile?.role === 'client' && (
               <>
-                <Link
-                  href="/post-job"
-                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
-                >
-                  Post a Job
-                </Link>
-                <Link
-                  href="/proposals"
-                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
-                >
-                  Proposals
-                </Link>
+                <Link href="/post-job" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">Post a Job</Link>
+                <Link href="/proposals" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">Proposals</Link>
               </>
             )}
 
             {user ? (
               <>
-                {/* DYNAMIC MOBILE DASHBOARD LINK */}
-                <Link
-                  href={dashboardLink}
-                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
-                >
-                  Dashboard
-                </Link>
-                
-                <Link
-                  href="/messages"
-                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
-                >
-                  Messages
-                </Link>
-                <Link
-                  href="/notifications"
-                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 flex items-center justify-between outline-none focus:outline-none"
-                >
+                <Link href={dashboardLink} className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">Dashboard</Link>
+                <Link href="/messages" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">Messages</Link>
+                <Link href="/notifications" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 flex justify-between">
                   <span>Notifications</span>
-                  {unread > 0 && (
-                    <span className="bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
-                      {unread > 9 ? '9+' : unread}
-                    </span>
-                  )}
+                  {unread > 0 && <span className="bg-red-500 text-white text-[10px] font-bold rounded-full px-1">{unread}</span>}
                 </Link>
-                <Link
-                  href={`/profile/${user.id}`}
-                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
-                >
+                <Link href={`/profile/${user.id}`} className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">
                   {profile?.full_name?.split(' ')[0] ?? 'Profile'}
                 </Link>
-                <button
-                  onClick={logout}
-                  className="py-3 px-3 rounded-lg text-left text-red-400 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
-                >
-                  Logout
-                </button>
+                <button onClick={logout} className="py-3 px-3 rounded-lg text-left text-red-400 font-semibold hover:bg-gray-800">Logout</button>
               </>
             ) : (
               <>
-                <Link
-                  href="/login"
-                  className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800 outline-none focus:outline-none"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="mt-2 bg-indigo-600 text-white text-center py-3 rounded-lg font-bold hover:bg-indigo-500 outline-none focus:outline-none"
-                >
-                  Sign Up
-                </Link>
+                <Link href="/login" className="py-3 px-3 rounded-lg text-gray-100 font-semibold hover:bg-gray-800">Login</Link>
+                <Link href="/register" className="mt-2 bg-amber-500 text-gray-900 text-center py-3 rounded-lg font-bold hover:bg-amber-400">Sign Up</Link>
               </>
             )}
           </div>
