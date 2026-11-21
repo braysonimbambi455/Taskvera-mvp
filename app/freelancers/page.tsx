@@ -17,7 +17,7 @@ export default async function FreelancersPage({
   let query = supabase
     .from('profiles')
     .select('*')
-    .eq('role', 'student') // or 'freelancer' depending on your DB
+    .eq('role', 'freelancer') // or 'freelancer' depending on your DB
     .eq('is_active', true)
 
   // 2. Apply Category Filter if one is clicked from the homepage

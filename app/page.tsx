@@ -42,18 +42,18 @@ export default function Home() {
 
   return (
     <main>
-      {/* HERO - Changed to Emerald/Teal Gradient */}
+      {/* HERO */}
       <section className="bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-800 text-white">
         <div className="max-w-6xl mx-auto px-6 py-20 md:py-28 text-center">
           <span className="inline-block bg-white/25 text-white font-bold px-4 py-1 rounded-full text-sm mb-6">
-             Built for university students in Kenya
+             Built for top freelancers in Kenya
           </span>
           <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white">
             We Connect You with Skilled Freelancers
           </h1>
           <p className="text-lg md:text-xl text-white font-bold mb-10 max-w-2xl mx-auto">
-            Hire talented university students for short gigs — design, voice-overs,
-            web development, and more. Students earn while they learn.
+            Hire talented freelancers for short gigs — design, voice-overs,
+            web development, and more. Work on your own terms.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Link
@@ -73,7 +73,7 @@ export default function Home() {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto mt-16">
             {[
-              { n: '100+', label: 'Students' },
+              { n: '100+', label: 'Freelancers' },
               { n: '120+', label: 'Companies' },
               { n: 'KES 10,000', label: 'Paid Out' },
             ].map((s) => (
@@ -184,7 +184,7 @@ export default function Home() {
               {
                 step: '1',
                 title: 'Post or Find a Job',
-                desc: 'Companies post gigs. Students browse and apply.',
+                desc: 'Companies post gigs. Freelancers browse and apply.',
               },
               {
                 step: '2',
@@ -219,10 +219,10 @@ export default function Home() {
       {/* CTA */}
       <section className="bg-emerald-700 text-white py-20 text-center px-6">
         <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
-          Ready to earn while you learn?
+          Ready to start earning?
         </h2>
         <p className="text-white font-bold mb-8 max-w-xl mx-auto">
-          Join thousands of students already earning on TaskVera.
+          Join thousands of freelancers already earning on TaskVera.
         </p>
         <Link
           href="/register"

@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'TaskVera — We Connect You with Skilled Freelancers',
-  description: 'Hire university students for short gigs. Earn while you learn.',
+  description: 'Hire university freelancers for short gigs. Earn while you learn.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

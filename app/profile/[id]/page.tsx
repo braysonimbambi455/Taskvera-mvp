@@ -59,8 +59,8 @@ export default async function ProfilePage({
               <div>
                 <h1 className="text-3xl font-bold">{profile.full_name}</h1>
                 <p className="text-gray-500 text-sm mt-1">
-                  {profile.role === 'student'
-                    ? `🎓 ${profile.university ?? 'Student'}`
+                  {profile.role === 'freelancer'
+                    ? `🎓 ${profile.university ?? 'freelancer'}`
                     : `🏢 ${profile.company_name ?? 'Company'}`}
                 </p>
                 <div className="flex items-center gap-2 mt-2 text-sm">
