@@ -33,32 +33,29 @@ export default function ProposalForm({ jobId, jobTitle }: { jobId: string; jobTi
 
   return (
     <>
-      <button onClick={() => setOpen(true)}
-        className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700">
+      <button onClick={() => setOpen(true)} className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700">
         Submit Proposal
       </button>
 
       {open && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl p-6 max-w-lg w-full">
-            <h2 className="text-2xl font-bold mb-2">Submit Proposal</h2>
-            <p className="text-sm text-gray-500 mb-4">For: {jobTitle}</p>
+            <h2 className="text-2xl font-extrabold mb-2 text-black">Submit Proposal</h2>
+            <p className="text-sm text-gray-600 font-bold mb-4">For: {jobTitle}</p>
             <form onSubmit={submit} className="space-y-4">
               <input required type="number" placeholder="Your bid (KES)" value={form.bid_amount}
                 onChange={(e) => setForm({ ...form, bid_amount: e.target.value })}
-                className="w-full border rounded-lg p-3" />
+                className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-bold" />
               <input required type="number" placeholder="Delivery days" value={form.delivery_days}
                 onChange={(e) => setForm({ ...form, delivery_days: e.target.value })}
-                className="w-full border rounded-lg p-3" />
+                className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-bold" />
               <textarea required rows={5} placeholder="Why are you a good fit?"
                 value={form.cover_letter}
                 onChange={(e) => setForm({ ...form, cover_letter: e.target.value })}
-                className="w-full border rounded-lg p-3" />
+                className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-bold" />
               <div className="flex gap-3">
-                <button type="button" onClick={() => setOpen(false)}
-                  className="flex-1 border py-3 rounded-lg">Cancel</button>
-                <button type="submit" disabled={loading}
-                  className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50">
+                <button type="button" onClick={() => setOpen(false)} className="flex-1 border-2 py-3 rounded-lg font-bold text-black">Cancel</button>
+                <button type="submit" disabled={loading} className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50">
                   {loading ? 'Sending...' : 'Submit'}
                 </button>
               </div>

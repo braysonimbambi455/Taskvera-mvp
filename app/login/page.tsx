@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense, useEffect } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -16,15 +16,6 @@ function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // Check for the deactivated error in the URL
-  useEffect(() => {
-    if (params.get('error') === 'deactivated') {
-      const msg = '🚫 Your account has been deactivated. Please contact support.'
-      setError(msg)
-      toast.error(msg)
-    }
-  }, [params])
-
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
@@ -35,8 +26,9 @@ function LoginForm() {
       password,
     })
 
+    setLoading(false)
+
     if (authError) {
-      setLoading(false)
       let msg = 'Wrong email or password. Please try again.'
       const lower = authError.message.toLowerCase()
 
@@ -53,28 +45,24 @@ function LoginForm() {
       return
     }
 
-    // Check if the user is active
+    // 🔥 ROLE-BASED REDIRECT
     if (authData.user) {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('is_active')
+        .select('role')
         .eq('id', authData.user.id)
         .single()
 
-      if (profile && profile.is_active === false) {
-        await supabase.auth.signOut()
-        setLoading(false)
-        const msg = '🚫 Your account has been deactivated. Please contact support.'
-        setError(msg)
-        toast.error(msg)
-        return
-      }
-    }
+      toast.success('Welcome back!')
 
-    setLoading(false)
-    toast.success('Welcome back!')
-    router.push(params.get('redirect') ?? '/dashboard')
-    router.refresh()
+      if (profile?.role === 'client') {
+        router.push('/dashboard/client')
+      } else {
+        router.push('/dashboard/freelancer')
+      }
+      router.refresh()
+      return
+    }
   }
 
   return (
@@ -96,7 +84,7 @@ function LoginForm() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           <PasswordInput
@@ -106,7 +94,6 @@ function LoginForm() {
             autoComplete="current-password"
           />
 
-          {/* FORGOT PASSWORD LINK */}
           <div className="flex justify-end">
             <Link
               href="/forgot-password"
@@ -125,7 +112,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 shadow-md"
           >
             {loading ? 'Logging in...' : 'Log In'}
           </button>
@@ -133,10 +120,7 @@ function LoginForm() {
 
         <p className="text-center text-gray-900 text-sm mt-6 font-bold">
           No account?{' '}
-          <Link
-            href="/register"
-            className="text-blue-700 font-extrabold hover:underline"
-          >
+          <Link href="/register" className="text-blue-700 font-extrabold hover:underline">
             Sign up
           </Link>
         </p>
@@ -147,11 +131,7 @@ function LoginForm() {
 
 export default function Login() {
   return (
-    <Suspense
-      fallback={
-        <div className="p-12 text-center text-black font-bold">Loading…</div>
-      }
-    >
+    <Suspense fallback={<div className="p-12 text-center text-black font-bold">Loading…</div>}>
       <LoginForm />
     </Suspense>
   )

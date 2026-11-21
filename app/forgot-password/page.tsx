@@ -15,7 +15,6 @@ export default function ForgotPassword() {
     e.preventDefault()
     setLoading(true)
 
-    // The redirect URL must match where your app will handle the new password
     const redirectTo = `${window.location.origin}/reset-password`
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -55,7 +54,7 @@ export default function ForgotPassword() {
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
               type="submit"

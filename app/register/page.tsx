@@ -6,52 +6,44 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import PasswordInput from '@/components/PasswordInput'
-import SkillsSelector from '@/components/profile/SkillsSelector'
 
 export default function Register() {
   const router = useRouter()
   const supabase = createClient()
   
-  // State now perfectly matches the database constraint
-  const [role, setRole] = useState<'freelancer' | 'client'>('freelancer')
+  // Original state was 'student'
+  const [role, setRole] = useState<'student' | 'client'>('student')
   const [form, setForm] = useState({
     full_name: '',
     email: '',
     password: '',
+    university: '',
     company_name: '',
-    portfolio_url: '',
   })
-  const [skills, setSkills] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
-
-    // Validation: Freelancers must select at least one skill
-    if (role === 'freelancer' && skills.length === 0) {
-      setError('⚠️ Please select at least one skill from the list.')
-      return
-    }
-
     setLoading(true)
     setError('')
 
-    // 1. Create the Auth User
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    const { error: authError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
         data: {
           full_name: form.full_name,
-          role, // This will now send 'freelancer' or 'client'
+          role,
+          university: role === 'student' ? form.university : null,
           company_name: role === 'client' ? form.company_name : null,
         },
       },
     })
 
+    setLoading(false)
+
     if (authError) {
-      setLoading(false)
       let msg = authError.message
       const lower = authError.message.toLowerCase()
 
@@ -70,23 +62,6 @@ export default function Register() {
       return
     }
 
-    // 2. Explicitly save the skills and portfolio to the newly created profile
-    if (authData.user && role === 'freelancer') {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ 
-          skills: skills,
-          portfolio_url: form.portfolio_url || null
-        })
-        .eq('id', authData.user.id)
-
-      if (profileError) {
-        console.error('Failed to save skills:', profileError)
-        toast.error('Account created, but skills failed to save. Please update your profile.')
-      }
-    }
-
-    setLoading(false)
     toast.success('Account created!')
     router.push('/dashboard')
     router.refresh()
@@ -107,7 +82,7 @@ export default function Register() {
 
         {/* Role toggle */}
         <div className="grid grid-cols-2 gap-2 bg-gray-200 p-1 rounded-lg mb-6">
-          {(['freelancer', 'client'] as const).map((r) => (
+          {(['student', 'client'] as const).map((r) => (
             <button
               key={r}
               type="button"
@@ -118,7 +93,7 @@ export default function Register() {
                   : 'text-gray-800 hover:text-black'
               }`}
             >
-              {r === 'freelancer' ? '💼 Freelancer' : '🏢 Company'}
+              {r === 'student' ? '🎓 Student' : '🏢 Company'}
             </button>
           ))}
         </div>
@@ -150,36 +125,20 @@ export default function Register() {
             name="new-password"
           />
 
-          {/* Conditional fields based on role */}
-          {role === 'client' ? (
+          {role === 'student' ? (
             <input
-              required
+              placeholder="University"
+              value={form.university}
+              onChange={(e) => setForm({ ...form, university: e.target.value })}
+              className={inputClass}
+            />
+          ) : (
+            <input
               placeholder="Company name"
               value={form.company_name}
               onChange={(e) => setForm({ ...form, company_name: e.target.value })}
               className={inputClass}
             />
-          ) : (
-            <div className="space-y-4 border-t-2 border-gray-100 pt-4 mt-4">
-              <div>
-                <label className="block text-sm font-bold text-black mb-2">
-                  Select Your Skills (Required)
-                </label>
-                <SkillsSelector selectedSkills={skills} onChange={setSkills} />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-black mb-2">
-                  Portfolio Link (Optional)
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://yourportfolio.com"
-                  value={form.portfolio_url}
-                  onChange={(e) => setForm({ ...form, portfolio_url: e.target.value })}
-                  className={inputClass}
-                />
-              </div>
-            </div>
           )}
 
           {error && (

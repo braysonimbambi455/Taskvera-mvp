@@ -15,7 +15,6 @@ export default function ResetPassword() {
   const [checkingSession, setCheckingSession] = useState(true)
 
   useEffect(() => {
-    // Check if the user has a valid session (created by the magic link)
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         toast.error('Invalid or expired reset link. Please try again.')
