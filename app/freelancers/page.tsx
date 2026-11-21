@@ -1,20 +1,35 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star, MapPin } from 'lucide-react'
+import { Star, MapPin, Search } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
-export default async function FreelancersPage() {
+export default async function FreelancersPage({ 
+  searchParams 
+}: { 
+  searchParams: { category?: string } 
+}) {
   const supabase = await createClient()
+  const categoryFilter = searchParams.category
 
-  // Fetch all users where the role is 'freelancer' (or 'student' depending on your DB)
-  const { data: freelancers, error } = await supabase
+  // 1. Base Query
+  let query = supabase
     .from('profiles')
     .select('*')
-    .eq('role', 'student') // Change to 'student' if your DB still uses that
+    .eq('role', 'student') // or 'freelancer' depending on your DB
     .eq('is_active', true)
-    .order('created_at', { ascending: false })
+
+  // 2. Apply Category Filter if one is clicked from the homepage
+  if (categoryFilter) {
+    // If your DB stores skills as an array column:
+    query = query.contains('skills', [categoryFilter])
+    
+    // Note: If your DB just has a 'category' text column instead of a 'skills' array, 
+    // change the line above to: query = query.eq('category', categoryFilter)
+  }
+
+  const { data: freelancers, error } = await query.order('created_at', { ascending: false })
 
   if (error) {
     return (
@@ -29,10 +44,19 @@ export default async function FreelancersPage() {
     <div className="max-w-6xl mx-auto px-6 py-12">
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-extrabold text-black mb-4">Browse Freelancers</h1>
+        <h1 className="text-4xl font-extrabold text-black mb-4">
+          {categoryFilter ? `Available ${categoryFilter}s` : 'Browse Freelancers'}
+        </h1>
         <p className="text-lg text-gray-800 font-bold max-w-2xl mx-auto">
-          Discover talented freelancers ready to help you with your next project.
+          {categoryFilter 
+            ? `Showing talented freelancers specialized in ${categoryFilter}.` 
+            : 'Discover talented freelancers ready to help you with your next project.'}
         </p>
+        {categoryFilter && (
+          <Link href="/freelancers" className="text-blue-600 font-bold hover:underline mt-4 inline-block">
+            Clear filter and view all
+          </Link>
+        )}
       </div>
 
       {/* Grid */}
@@ -75,7 +99,9 @@ export default async function FreelancersPage() {
               <div className="flex items-center gap-2 mb-4 bg-gray-50 p-2 rounded-lg w-fit">
                 <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                 <span className="text-sm font-bold text-black">{freelancer.rating || 0}</span>
-                <span className="text-xs text-gray-500 font-bold">({freelancer.total_earnings ? `KES ${freelancer.total_earnings} earned` : 'New'})</span>
+                <span className="text-xs text-gray-500 font-bold">
+                  ({freelancer.total_earnings ? `KES ${freelancer.total_earnings} earned` : 'New'})
+                </span>
               </div>
 
               {/* Bio */}
@@ -126,8 +152,13 @@ export default async function FreelancersPage() {
         </div>
       ) : (
         <div className="text-center py-20 bg-gray-50 rounded-2xl border-2 border-gray-200">
+          <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-black mb-2">No freelancers found</h3>
-          <p className="text-gray-600 font-medium">There are currently no active freelancers on the platform.</p>
+          <p className="text-gray-600 font-medium">
+            {categoryFilter 
+              ? `We couldn't find any active freelancers listed under "${categoryFilter}".` 
+              : 'There are currently no active freelancers on the platform.'}
+          </p>
         </div>
       )}
     </div>

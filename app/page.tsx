@@ -1,7 +1,45 @@
 import Link from 'next/link'
 import { CATEGORIES, MOCK_JOBS } from '@/lib/data'
+import { 
+  Code2, 
+  Bot, 
+  Palette, 
+  Megaphone, 
+  BarChart3, 
+  CheckCircle2 
+} from 'lucide-react'
 
 export default function Home() {
+  
+  // The 5 categories from your image
+  const expertiseAreas = [
+    {
+      title: "Development & Technology Solutions",
+      icon: <Code2 className="w-6 h-6 text-white" />,
+      items: ["WordPress Development", "Web Development", "Shopify Development", "Mobile App Development", "Ecommerce Development"]
+    },
+    {
+      title: "Automation & AI Solutions",
+      icon: <Bot className="w-6 h-6 text-white" />,
+      items: ["Chatbot Development", "Automation Experts", "AI Consultant", "Claude Experts", "Vibe Coders"]
+    },
+    {
+      title: "Creative & Media Solutions",
+      icon: <Palette className="w-6 h-6 text-white" />,
+      items: ["Graphic Designers", "Web Designers", "Video Editors", "Photo Editors"]
+    },
+    {
+      title: "Digital Marketing & Advertising",
+      icon: <Megaphone className="w-6 h-6 text-white" />,
+      items: ["Google Ads Experts", "SEO Experts", "Meta Ads Experts", "Social Media Marketers", "SEM Specialists", "Marketing Strategists"]
+    },
+    {
+      title: "Data & Business Intelligence",
+      icon: <BarChart3 className="w-6 h-6 text-white" />,
+      items: ["Data Analysis", "Business Analysis", "Data Entry Specialists", "Bookkeepers"]
+    }
+  ]
+
   return (
     <main>
       {/* HERO */}
@@ -50,33 +88,52 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CATEGORIES */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-extrabold text-black text-center mb-3">
-          Popular Categories
-        </h2>
-        <p className="text-center text-black font-bold mb-12">
-          Find the right skill for your next task
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {CATEGORIES.map((c) => (
-            <Link
-              key={c.name}
-              href={`/jobs?category=${encodeURIComponent(c.name)}`}
-              className="border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-blue-400 transition bg-white"
-            >
-              <div className="text-4xl mb-3">{c.icon}</div>
-              <h3 className="font-extrabold text-lg text-black">{c.name}</h3>
-              <p className="text-black font-bold text-sm">
-                {MOCK_JOBS.filter((j) => j.category === c.name).length} open jobs
-              </p>
-            </Link>
-          ))}
+      {/* NEW EXPERTISE & SERVICE AREAS SECTION */}
+      <section className="bg-gray-50 py-20 border-b-4 border-blue-900">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-black uppercase tracking-wide">
+              Expertise & Service Areas
+            </h2>
+            <p className="text-blue-800 font-bold mt-2 text-lg">
+              Technology | Marketing | Data | Creative | Business Support
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {expertiseAreas.map((cat, index) => (
+              <div key={index} className="bg-white rounded-xl shadow-md border-2 border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+                {/* Header */}
+                <div className="bg-blue-800 p-4 flex items-center gap-3">
+                  <div className="bg-blue-600 p-2 rounded-lg">
+                    {cat.icon}
+                  </div>
+                  <h3 className="text-white font-extrabold text-sm md:text-base leading-tight uppercase">
+                    {cat.title}
+                  </h3>
+                </div>
+                
+                {/* List Items */}
+                <div className="p-6 bg-blue-50/30">
+                  <ul className="space-y-3">
+                    {cat.items.map((item, i) => (
+                      <li key={i} className="flex items-center gap-3 text-sm font-bold text-gray-700">
+                        <CheckCircle2 className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                        <Link href={`/freelancers?category=${encodeURIComponent(item)}`} className="hover:text-blue-700 hover:underline">
+                          {item}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* RECENT JOBS */}
-      <section className="bg-gray-50 py-20">
+      <section className="bg-white py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-3xl font-extrabold text-black">Recent Jobs</h2>
@@ -116,8 +173,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* HOW IT WORKS - UPDATED FOR MOBILE VISIBILITY */}
-      <section className="bg-white py-20 border-t border-gray-200">
+      {/* HOW IT WORKS */}
+      <section className="bg-gray-50 py-20 border-t border-gray-200">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-extrabold text-black text-center mb-12">
             How TaskVera Works
@@ -142,7 +199,7 @@ export default function Home() {
             ].map((s) => (
               <div 
                 key={s.step} 
-                className="text-center bg-gray-50 p-8 rounded-2xl border-2 border-gray-300 shadow-sm"
+                className="text-center bg-white p-8 rounded-2xl border-2 border-gray-300 shadow-sm"
               >
                 <div className="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-extrabold mx-auto mb-4 shadow-md">
                   {s.step}
