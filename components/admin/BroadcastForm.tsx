@@ -46,7 +46,7 @@ export default function BroadcastForm() {
             placeholder="e.g., TaskVera now supports M-Pesa!"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-medium focus:ring-2 focus:ring-blue-500 outline-none"
+            className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
           />
         </div>
         <div>
@@ -57,13 +57,13 @@ export default function BroadcastForm() {
             placeholder="e.g., We are excited to announce..."
             value={body}
             onChange={(e) => setBody(e.target.value)}
-            className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-medium focus:ring-2 focus:ring-blue-500 outline-none"
+            className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-medium focus:ring-2 focus:ring-emerald-500 outline-none"
           />
         </div>
         <button
           type="submit"
           disabled={pending}
-          className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-md disabled:opacity-50"
+          className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-emerald-700 transition shadow-md disabled:opacity-50"
         >
           <Send className="w-5 h-5" />
           {pending ? 'Sending to all users...' : 'Send to All Users'}

@@ -42,7 +42,7 @@ export default async function ClientDashboard() {
   const pendingProposals = proposals?.filter(p => p.status === 'pending').length ?? 0
 
   const stats = [
-    { label: 'Open Jobs', value: openJobs, color: 'text-blue-600' },
+    { label: 'Open Jobs', value: openJobs, color: 'text-emerald-600' },
     { label: 'Jobs In Progress', value: inProgressJobs, color: 'text-yellow-600' },
     { label: 'Total Proposals', value: proposals?.length ?? 0, color: 'text-green-600' },
     { label: 'New Proposals', value: pendingProposals, color: 'text-purple-600' },
@@ -58,7 +58,7 @@ export default async function ClientDashboard() {
         </div>
         <Link
           href="/post-job"
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-md transition"
+          className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-emerald-700 shadow-md transition"
         >
           + Post a New Job
         </Link>
@@ -80,7 +80,7 @@ export default async function ClientDashboard() {
         <div>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-extrabold text-black">Your Posted Jobs</h2>
-            <Link href="/jobs" className="text-blue-600 font-bold hover:underline text-sm">View All</Link>
+            <Link href="/jobs" className="text-emerald-600 font-bold hover:underline text-sm">View All</Link>
           </div>
           <div className="space-y-3">
             {jobs?.slice(0, 5).map((job) => (
@@ -109,7 +109,7 @@ export default async function ClientDashboard() {
             {jobs?.length === 0 && (
               <div className="text-center py-10 border-2 border-gray-200 rounded-lg bg-gray-50">
                 <p className="text-gray-600 font-bold mb-2">You haven't posted any jobs yet.</p>
-                <Link href="/post-job" className="text-blue-600 font-bold hover:underline">Post your first job</Link>
+                <Link href="/post-job" className="text-emerald-600 font-bold hover:underline">Post your first job</Link>
               </div>
             )}
           </div>
@@ -123,7 +123,7 @@ export default async function ClientDashboard() {
               <div key={proposal.id} className="border-2 border-gray-200 rounded-lg p-4 bg-white">
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-800">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-emerald-800">
                       {proposal.profiles?.full_name?.charAt(0) || '?'}
                     </div>
                     <div>
@@ -134,7 +134,7 @@ export default async function ClientDashboard() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-extrabold text-blue-700">{formatKES(proposal.bid_amount)}</div>
+                    <div className="text-sm font-extrabold text-emerald-700">{formatKES(proposal.bid_amount)}</div>
                     <div className="text-xs text-gray-500 font-bold">{proposal.delivery_days} days</div>
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export default async function ClientDashboard() {
                 </div>
                 <Link 
                   href={`/jobs/${proposal.job_id}`} 
-                  className="block text-center mt-3 bg-blue-50 text-blue-700 py-2 rounded-lg font-bold text-sm hover:bg-blue-100"
+                  className="block text-center mt-3 bg-emerald-50 text-emerald-700 py-2 rounded-lg font-bold text-sm hover:bg-blue-100"
                 >
                   View Proposal & Hire
                 </Link>

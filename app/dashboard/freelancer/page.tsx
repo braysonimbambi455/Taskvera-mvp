@@ -47,7 +47,7 @@ export default async function FreelancerDashboard() {
 
   const stats = [
     { label: 'Total Earned', value: formatKES(totalEarned), color: 'text-green-600' },
-    { label: 'Active Contracts', value: activeContracts.length, color: 'text-blue-600' },
+    { label: 'Active Contracts', value: activeContracts.length, color: 'text-emerald-600' },
     { label: 'Pending Proposals', value: pendingProposals.length, color: 'text-yellow-600' },
   ]
 
@@ -61,7 +61,7 @@ export default async function FreelancerDashboard() {
         </div>
         <Link 
           href="/jobs" 
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-md transition"
+          className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-emerald-700 shadow-md transition"
         >
           Find New Work
         </Link>
@@ -87,18 +87,18 @@ export default async function FreelancerDashboard() {
               <Link 
                 key={contract.id} 
                 href={`/contracts/${contract.id}`}
-                className="block border-2 border-blue-200 bg-blue-50 rounded-lg p-5 hover:shadow-md transition"
+                className="block border-2 border-blue-200 bg-emerald-50 rounded-lg p-5 hover:shadow-md transition"
               >
                 <div className="flex justify-between items-start mb-2">
                   <span className="font-bold text-black text-lg">{contract.jobs?.title}</span>
-                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 bg-blue-600 text-white rounded-md">
+                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 bg-emerald-600 text-white rounded-md">
                     Active
                   </span>
                 </div>
                 <div className="text-sm font-bold text-gray-700">
                   Client: {contract.profiles?.company_name || contract.profiles?.full_name}
                 </div>
-                <div className="text-sm font-extrabold text-blue-700 mt-2">
+                <div className="text-sm font-extrabold text-emerald-700 mt-2">
                   Amount: {formatKES(contract.amount)}
                 </div>
               </Link>
@@ -128,7 +128,7 @@ export default async function FreelancerDashboard() {
             {activeContracts.length === 0 && deliveredContracts.length === 0 && (
               <div className="text-center py-10 border-2 border-gray-200 rounded-lg bg-gray-50">
                 <p className="text-gray-600 font-bold mb-2">No active contracts</p>
-                <Link href="/jobs" className="text-blue-600 font-bold hover:underline">Apply for jobs to get hired</Link>
+                <Link href="/jobs" className="text-emerald-600 font-bold hover:underline">Apply for jobs to get hired</Link>
               </div>
             )}
           </div>
@@ -166,7 +166,7 @@ export default async function FreelancerDashboard() {
             {proposals?.length === 0 && (
               <div className="text-center py-10 border-2 border-gray-200 rounded-lg bg-gray-50">
                 <p className="text-gray-600 font-bold mb-2">No proposals sent yet</p>
-                <Link href="/jobs" className="text-blue-600 font-bold hover:underline">Browse open jobs</Link>
+                <Link href="/jobs" className="text-emerald-600 font-bold hover:underline">Browse open jobs</Link>
               </div>
             )}
           </div>

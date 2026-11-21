@@ -41,7 +41,7 @@ export default function UserTable({ users }: { users: any[] }) {
             onClick={() => setFilter(f)}
             className={`px-4 py-2 rounded-lg font-bold text-sm capitalize transition ${
               filter === f
-                ? 'bg-blue-600 text-white shadow-md'
+                ? 'bg-emerald-600 text-white shadow-md'
                 : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
             }`}
           >
@@ -66,7 +66,7 @@ export default function UserTable({ users }: { users: any[] }) {
             {filteredUsers.map((u) => (
               <tr key={u.id} className="hover:bg-gray-50 transition">
                 <td className="p-4 font-bold text-black">
-                  <Link href={`/profile/${u.id}`} className="hover:text-blue-600 hover:underline">
+                  <Link href={`/profile/${u.id}`} className="hover:text-emerald-600 hover:underline">
                     {u.full_name}
                   </Link>
                   {u.role === 'freelancer' && (
@@ -79,7 +79,7 @@ export default function UserTable({ users }: { users: any[] }) {
                 <td className="p-4">
                   <span className={`text-xs px-2 py-1 rounded-md font-bold uppercase tracking-wider ${
                     u.role === 'admin' ? 'bg-purple-100 text-purple-800' :
-                    u.role === 'client' ? 'bg-blue-100 text-blue-800' : 
+                    u.role === 'client' ? 'bg-blue-100 text-emerald-800' : 
                     'bg-green-100 text-green-800'
                   }`}>
                     {u.role}

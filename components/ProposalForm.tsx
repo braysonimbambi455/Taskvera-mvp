@@ -33,7 +33,7 @@ export default function ProposalForm({ jobId, jobTitle }: { jobId: string; jobTi
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700">
+      <button onClick={() => setOpen(true)} className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-emerald-700">
         Submit Proposal
       </button>
 
@@ -55,7 +55,7 @@ export default function ProposalForm({ jobId, jobTitle }: { jobId: string; jobTi
                 className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-bold" />
               <div className="flex gap-3">
                 <button type="button" onClick={() => setOpen(false)} className="flex-1 border-2 py-3 rounded-lg font-bold text-black">Cancel</button>
-                <button type="submit" disabled={loading} className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50">
+                <button type="submit" disabled={loading} className="flex-1 bg-emerald-600 text-white py-3 rounded-lg font-bold hover:bg-emerald-700 disabled:opacity-50">
                   {loading ? 'Sending...' : 'Submit'}
                 </button>
               </div>

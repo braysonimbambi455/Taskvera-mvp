@@ -21,7 +21,8 @@ export default function PostJob() {
     location: 'Remote' 
   })
 
-  const inputClass = 'w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold focus:outline-none focus:ring-2 focus:ring-blue-500'
+  // Changed focus ring to emerald
+  const inputClass = 'w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500'
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => { if (!data.user) router.push('/login') })
@@ -130,7 +131,8 @@ export default function PostJob() {
           <input type="date" value={form.deadline} onChange={(e) => setForm({ ...form, deadline: e.target.value })} className={inputClass} />
         </div>
 
-        <button disabled={loading} className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 transition shadow-md mt-4">
+        {/* Changed button to Emerald */}
+        <button disabled={loading} className="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold hover:bg-emerald-700 disabled:opacity-50 transition shadow-md mt-4">
           {loading ? 'Posting Job...' : 'Post Job'}
         </button>
       </form>

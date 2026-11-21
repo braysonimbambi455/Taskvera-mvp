@@ -20,17 +20,17 @@ export default function ContactPage() {
           <form className="space-y-4">
             <div>
               <label className="block text-sm font-bold text-black mb-1">Name</label>
-              <input type="text" placeholder="Your name" className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+              <input type="text" placeholder="Your name" className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-medium focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" />
             </div>
             <div>
               <label className="block text-sm font-bold text-black mb-1">Email</label>
-              <input type="email" placeholder="you@example.com" className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+              <input type="email" placeholder="you@example.com" className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-medium focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" />
             </div>
             <div>
               <label className="block text-sm font-bold text-black mb-1">Message</label>
-              <textarea rows={4} placeholder="How can we help?" className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"></textarea>
+              <textarea rows={4} placeholder="How can we help?" className="w-full border-2 border-gray-300 rounded-lg p-3 text-black font-medium focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"></textarea>
             </div>
-            <button type="button" className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+            <button type="button" className="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold hover:bg-emerald-700 transition">
               Send Message
             </button>
           </form>
@@ -39,7 +39,7 @@ export default function ContactPage() {
         {/* Contact Details */}
         <div className="space-y-6">
           <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl">
-            <Mail className="w-6 h-6 text-blue-600 mt-1" />
+            <Mail className="w-6 h-6 text-emerald-600 mt-1" />
             <div>
               <h3 className="font-bold text-black">Email</h3>
               <p className="text-gray-700 font-medium">support@marketnest.co.ke</p>
@@ -48,7 +48,7 @@ export default function ContactPage() {
           </div>
           
           <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl">
-            <Phone className="w-6 h-6 text-blue-600 mt-1" />
+            <Phone className="w-6 h-6 text-emerald-600 mt-1" />
             <div>
               <h3 className="font-bold text-black">Phone</h3>
               <p className="text-gray-700 font-medium">0796 135 006</p>
@@ -58,7 +58,7 @@ export default function ContactPage() {
           </div>
 
           <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl">
-            <MapPin className="w-6 h-6 text-blue-600 mt-1" />
+            <MapPin className="w-6 h-6 text-emerald-600 mt-1" />
             <div>
               <h3 className="font-bold text-black">Office</h3>
               <p className="text-gray-700 font-medium">Nairobi, Kenya</p>

@@ -33,7 +33,7 @@ export default function PasswordInput({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full border-2 border-gray-400 rounded-lg p-3 pr-12 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="w-full border-2 border-gray-400 rounded-lg p-3 pr-12 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
       />
       <button
         type="button"

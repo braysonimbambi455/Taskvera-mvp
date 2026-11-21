@@ -47,7 +47,7 @@ export default function JobTable({ jobs }: { jobs: any[] }) {
             {jobs.map((job) => (
               <tr key={job.id} className="hover:bg-gray-50 transition">
                 <td className="p-4 font-bold text-black max-w-[250px] truncate">
-                  <Link href={`/jobs/${job.id}`} className="hover:text-blue-600 hover:underline">
+                  <Link href={`/jobs/${job.id}`} className="hover:text-emerald-600 hover:underline">
                     {job.title}
                   </Link>
                   <div className="text-xs text-gray-500 font-medium mt-1">{job.category}</div>

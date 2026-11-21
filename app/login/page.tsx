@@ -26,9 +26,8 @@ function LoginForm() {
       password,
     })
 
-    setLoading(false)
-
     if (authError) {
+      setLoading(false)
       let msg = 'Wrong email or password. Please try again.'
       const lower = authError.message.toLowerCase()
 
@@ -55,13 +54,12 @@ function LoginForm() {
 
       toast.success('Welcome back!')
 
+      // Force a hard reload so middleware catches the session cookie
       if (profile?.role === 'client') {
-        router.push('/dashboard/client')
+        window.location.href = '/dashboard/client'
       } else {
-        router.push('/dashboard/freelancer')
+        window.location.href = '/dashboard/freelancer'
       }
-      router.refresh()
-      return
     }
   }
 
@@ -84,7 +82,7 @@ function LoginForm() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
           />
 
           <PasswordInput
@@ -97,7 +95,7 @@ function LoginForm() {
           <div className="flex justify-end">
             <Link
               href="/forgot-password"
-              className="text-sm font-bold text-blue-700 hover:underline"
+              className="text-sm font-bold text-emerald-700 hover:underline"
             >
               Forgot password?
             </Link>
@@ -112,7 +110,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 shadow-md"
+            className="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold hover:bg-emerald-700 disabled:opacity-50 shadow-md transition-colors"
           >
             {loading ? 'Logging in...' : 'Log In'}
           </button>
@@ -120,7 +118,7 @@ function LoginForm() {
 
         <p className="text-center text-gray-900 text-sm mt-6 font-bold">
           No account?{' '}
-          <Link href="/register" className="text-blue-700 font-extrabold hover:underline">
+          <Link href="/register" className="text-emerald-700 font-extrabold hover:underline">
             Sign up
           </Link>
         </p>

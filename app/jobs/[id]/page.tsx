@@ -24,10 +24,10 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
-      <Link href="/jobs" className="text-blue-600 font-bold text-sm hover:underline">← Back to jobs</Link>
+      <Link href="/jobs" className="text-emerald-600 font-bold text-sm hover:underline">← Back to jobs</Link>
       <div className="bg-white border-2 border-gray-200 rounded-2xl p-8 mt-4">
         <div className="flex justify-between items-start flex-wrap gap-3">
-          <span className="text-xs bg-blue-100 text-blue-800 font-bold px-3 py-1 rounded-full">
+          <span className="text-xs bg-blue-100 text-emerald-800 font-bold px-3 py-1 rounded-full">
             {job.category}
           </span>
           <span className="text-xs text-gray-500 font-bold">Posted {timeAgo(job.created_at)}</span>
@@ -38,7 +38,7 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
         <div className="grid md:grid-cols-3 gap-4 my-6">
           <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <div className="text-xs text-gray-500 font-bold uppercase">Budget</div>
-            <div className="font-extrabold text-blue-700 mt-1">
+            <div className="font-extrabold text-emerald-700 mt-1">
               {formatKES(job.budget_min)} – {formatKES(job.budget_max)}
             </div>
           </div>
@@ -71,7 +71,7 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
                 <ProposalForm jobId={job.id} jobTitle={job.title} />
               )
             ) : (
-              <Link href="/login" className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold">
+              <Link href="/login" className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold">
                 Log in to apply
               </Link>
             )}

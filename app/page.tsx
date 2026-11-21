@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { CATEGORIES, MOCK_JOBS } from '@/lib/data'
+import { MOCK_JOBS } from '@/lib/data'
 import { 
   Code2, 
   Bot, 
@@ -42,8 +42,8 @@ export default function Home() {
 
   return (
     <main>
-      {/* HERO */}
-      <section className="bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 text-white">
+      {/* HERO - Changed to Emerald/Teal Gradient */}
+      <section className="bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-800 text-white">
         <div className="max-w-6xl mx-auto px-6 py-20 md:py-28 text-center">
           <span className="inline-block bg-white/25 text-white font-bold px-4 py-1 rounded-full text-sm mb-6">
              Built for university students in Kenya
@@ -58,7 +58,7 @@ export default function Home() {
           <div className="flex gap-4 justify-center flex-wrap">
             <Link
               href="/post-job"
-              className="bg-white text-blue-800 font-extrabold px-8 py-4 rounded-lg hover:bg-blue-50 transition shadow-md"
+              className="bg-white text-emerald-800 font-extrabold px-8 py-4 rounded-lg hover:bg-emerald-50 transition shadow-md"
             >
               Post a Job
             </Link>
@@ -88,14 +88,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NEW EXPERTISE & SERVICE AREAS SECTION */}
-      <section className="bg-gray-50 py-20 border-b-4 border-blue-900">
+      {/* EXPERTISE & SERVICE AREAS */}
+      <section className="bg-gray-50 py-20 border-b-4 border-emerald-900">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-extrabold text-black uppercase tracking-wide">
               Expertise & Service Areas
             </h2>
-            <p className="text-blue-800 font-bold mt-2 text-lg">
+            <p className="text-emerald-800 font-bold mt-2 text-lg">
               Technology | Marketing | Data | Creative | Business Support
             </p>
           </div>
@@ -104,8 +104,8 @@ export default function Home() {
             {expertiseAreas.map((cat, index) => (
               <div key={index} className="bg-white rounded-xl shadow-md border-2 border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
                 {/* Header */}
-                <div className="bg-blue-800 p-4 flex items-center gap-3">
-                  <div className="bg-blue-600 p-2 rounded-lg">
+                <div className="bg-emerald-800 p-4 flex items-center gap-3">
+                  <div className="bg-emerald-600 p-2 rounded-lg">
                     {cat.icon}
                   </div>
                   <h3 className="text-white font-extrabold text-sm md:text-base leading-tight uppercase">
@@ -114,12 +114,12 @@ export default function Home() {
                 </div>
                 
                 {/* List Items */}
-                <div className="p-6 bg-blue-50/30">
+                <div className="p-6 bg-emerald-50/30">
                   <ul className="space-y-3">
                     {cat.items.map((item, i) => (
                       <li key={i} className="flex items-center gap-3 text-sm font-bold text-gray-700">
-                        <CheckCircle2 className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                        <Link href={`/freelancers?category=${encodeURIComponent(item)}`} className="hover:text-blue-700 hover:underline">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                        <Link href={`/freelancers?category=${encodeURIComponent(item)}`} className="hover:text-emerald-700 hover:underline">
                           {item}
                         </Link>
                       </li>
@@ -139,7 +139,7 @@ export default function Home() {
             <h2 className="text-3xl font-extrabold text-black">Recent Jobs</h2>
             <Link
               href="/jobs"
-              className="text-blue-700 font-extrabold hover:underline"
+              className="text-emerald-700 font-extrabold hover:underline"
             >
               View all →
             </Link>
@@ -151,7 +151,7 @@ export default function Home() {
                 href={`/jobs/${job.id}`}
                 className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition"
               >
-                <span className="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-1 rounded">
+                <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded">
                   {job.category}
                 </span>
                 <h3 className="text-lg font-extrabold text-black mt-3 line-clamp-2">
@@ -161,7 +161,7 @@ export default function Home() {
                   {job.description}
                 </p>
                 <div className="flex justify-between mt-4 text-sm">
-                  <span className="font-extrabold text-blue-700">
+                  <span className="font-extrabold text-emerald-700">
                     KES {job.budget_min.toLocaleString()} –{' '}
                     {job.budget_max.toLocaleString()}
                   </span>
@@ -201,7 +201,7 @@ export default function Home() {
                 key={s.step} 
                 className="text-center bg-white p-8 rounded-2xl border-2 border-gray-300 shadow-sm"
               >
-                <div className="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-extrabold mx-auto mb-4 shadow-md">
+                <div className="w-14 h-14 bg-emerald-600 text-white rounded-full flex items-center justify-center text-2xl font-extrabold mx-auto mb-4 shadow-md">
                   {s.step}
                 </div>
                 <h3 className="font-extrabold text-xl text-black mb-2">
@@ -217,7 +217,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="bg-blue-600 text-white py-20 text-center px-6">
+      <section className="bg-emerald-700 text-white py-20 text-center px-6">
         <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
           Ready to earn while you learn?
         </h2>
@@ -226,7 +226,7 @@ export default function Home() {
         </p>
         <Link
           href="/register"
-          className="bg-white text-blue-700 px-8 py-4 rounded-lg font-extrabold hover:bg-blue-50 transition inline-block shadow-md"
+          className="bg-white text-emerald-800 px-8 py-4 rounded-lg font-extrabold hover:bg-emerald-50 transition inline-block shadow-md"
         >
           Get Started — It's Free
         </Link>

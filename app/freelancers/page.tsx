@@ -53,7 +53,7 @@ export default async function FreelancersPage({
             : 'Discover talented freelancers ready to help you with your next project.'}
         </p>
         {categoryFilter && (
-          <Link href="/freelancers" className="text-blue-600 font-bold hover:underline mt-4 inline-block">
+          <Link href="/freelancers" className="text-emerald-600 font-bold hover:underline mt-4 inline-block">
             Clear filter and view all
           </Link>
         )}
@@ -79,7 +79,7 @@ export default async function FreelancersPage({
                       className="object-cover w-full h-full"
                     />
                   ) : (
-                    <span className="text-2xl font-extrabold text-blue-700">
+                    <span className="text-2xl font-extrabold text-emerald-700">
                       {freelancer.full_name?.charAt(0).toUpperCase()}
                     </span>
                   )}
@@ -116,7 +116,7 @@ export default async function FreelancersPage({
                     freelancer.skills.slice(0, 3).map((skill: string) => (
                       <span 
                         key={skill} 
-                        className="text-xs font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded-md"
+                        className="text-xs font-bold bg-emerald-50 text-emerald-700 px-2 py-1 rounded-md"
                       >
                         {skill}
                       </span>
@@ -136,7 +136,7 @@ export default async function FreelancersPage({
               <div className="flex items-center justify-between pt-4 border-t-2 border-gray-100 mt-auto">
                 <div>
                   <div className="text-xs text-gray-500 font-bold uppercase">Rate</div>
-                  <div className="text-sm font-extrabold text-blue-700">
+                  <div className="text-sm font-extrabold text-emerald-700">
                     {freelancer.hourly_rate ? `KES ${freelancer.hourly_rate}/hr` : 'Negotiable'}
                   </div>
                 </div>

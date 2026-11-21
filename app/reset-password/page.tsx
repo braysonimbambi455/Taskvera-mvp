@@ -73,14 +73,14 @@ export default function ResetPassword() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md"
+            className="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold hover:bg-emerald-700 disabled:opacity-50 transition-colors shadow-md"
           >
             {loading ? 'Updating...' : 'Update Password'}
           </button>
         </form>
 
         <p className="text-center text-gray-900 text-sm mt-6 font-bold">
-          <Link href="/login" className="text-blue-700 font-extrabold hover:underline">
+          <Link href="/login" className="text-emerald-700 font-extrabold hover:underline">
             Back to Login
           </Link>
         </p>

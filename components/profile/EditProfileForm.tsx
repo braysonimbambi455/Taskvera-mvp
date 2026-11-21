@@ -34,7 +34,7 @@ export default function EditProfileForm({
 
   // Shared input styling
   const inputClass =
-    'w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+    'w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'
 
   async function handleAvatar(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -256,7 +256,7 @@ export default function EditProfileForm({
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50"
+          className="flex-1 bg-emerald-600 text-white py-3 rounded-lg font-bold hover:bg-emerald-700 disabled:opacity-50"
         >
           {saving ? 'Saving…' : 'Save Changes'}
         </button>

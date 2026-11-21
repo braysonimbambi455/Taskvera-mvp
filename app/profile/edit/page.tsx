@@ -23,7 +23,7 @@ export default async function EditProfilePage() {
     <div className="max-w-2xl mx-auto px-6 py-12">
       <Link 
         href={`/profile/${user.id}`} 
-        className="text-blue-600 font-bold text-sm hover:underline mb-4 inline-block"
+        className="text-emerald-600 font-bold text-sm hover:underline mb-4 inline-block"
       >
         ← Back to Profile
       </Link>

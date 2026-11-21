@@ -39,7 +39,7 @@ export default function AboutPage() {
         <div className="text-center mt-12">
           <Link 
             href="/register"
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition"
+            className="bg-emerald-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-emerald-700 transition"
           >
             Join TaskVera Today
           </Link>

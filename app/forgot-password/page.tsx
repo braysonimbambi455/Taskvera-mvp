@@ -54,12 +54,12 @@ export default function ForgotPassword() {
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md"
+              className="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold hover:bg-emerald-700 disabled:opacity-50 transition-colors shadow-md"
             >
               {loading ? 'Sending...' : 'Send Reset Link'}
             </button>
@@ -68,7 +68,7 @@ export default function ForgotPassword() {
 
         <p className="text-center text-gray-900 text-sm mt-6 font-bold">
           Remembered it?{' '}
-          <Link href="/login" className="text-blue-700 font-extrabold hover:underline">
+          <Link href="/login" className="text-emerald-700 font-extrabold hover:underline">
             Back to Login
           </Link>
         </p>

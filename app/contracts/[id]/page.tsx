@@ -42,7 +42,7 @@ export default async function ContractPage({
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
-      <Link href="/messages" className="text-blue-600 font-bold text-sm hover:underline">
+      <Link href="/messages" className="text-emerald-600 font-bold text-sm hover:underline">
         ← Back to messages
       </Link>
 
@@ -58,13 +58,13 @@ export default async function ContractPage({
           </div>
           <div className="text-right">
             <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Amount</div>
-            <div className="text-xl font-extrabold text-blue-700">
+            <div className="text-xl font-extrabold text-emerald-700">
               {formatKES(contract.amount)}
             </div>
             <span
               className={`inline-block mt-2 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider ${
                 contract.status === 'active'
-                  ? 'bg-blue-100 text-blue-800'
+                  ? 'bg-blue-100 text-emerald-800'
                   : contract.status === 'delivered'
                   ? 'bg-yellow-100 text-yellow-800'
                   : contract.status === 'paid'
