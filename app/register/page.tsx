@@ -93,7 +93,7 @@ export default function Register() {
                   : 'text-gray-800 hover:text-black'
               }`}
             >
-              {r === 'freelancer' ? '🎓 freelancer' : '🏢 Company'}
+              {r === 'freelancer' ? ' freelancer' : ' Company'}
             </button>
           ))}
         </div>
