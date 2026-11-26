@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star } from 'lucide-react'
+import { Star, Briefcase } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -34,10 +34,11 @@ export default async function ProfilePage({
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
-      <div className="bg-white border rounded-2xl p-8">
+      <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm">
         <div className="flex items-start gap-6 flex-wrap">
+          
           {/* Avatar */}
-          <div className="w-24 h-24 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center flex-shrink-0">
+          <div className="w-24 h-24 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center flex-shrink-0 border-2 border-blue-300">
             {profile.avatar_url ? (
               <Image
                 src={profile.avatar_url}
@@ -47,7 +48,7 @@ export default async function ProfilePage({
                 className="object-cover w-full h-full"
               />
             ) : (
-              <span className="text-3xl font-bold text-indigo-700">
+              <span className="text-3xl font-extrabold text-blue-800">
                 {profile.full_name?.charAt(0).toUpperCase()}
               </span>
             )}
@@ -56,18 +57,22 @@ export default async function ProfilePage({
           {/* Identity */}
           <div className="flex-1 min-w-[240px]">
             <div className="flex justify-between items-start flex-wrap gap-3">
-              <div>
-                <h1 className="text-3xl font-bold">{profile.full_name}</h1>
-                <p className="text-gray-500 text-sm mt-1">
+              <div className="min-w-0">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-black break-words">
+                  {profile.full_name}
+                </h1>
+                
+                <p className="text-sm sm:text-base font-bold text-black mt-2">
                   {profile.role === 'freelancer'
-                    ? `🎓 ${profile.university ?? 'freelancer'}`
-                    : `🏢 ${profile.company_name ?? 'Company'}`}
+                    ? `🎓 ${profile.university || 'Freelancer'}`
+                    : `🏢 ${profile.company_name || 'Company'}`}
                 </p>
-                <div className="flex items-center gap-2 mt-2 text-sm">
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-medium">{profile.rating ?? 0}</span>
-                  <span className="text-gray-400">
-                    · {profile.total_earnings ? `KES ${profile.total_earnings}` : 'New'}
+
+                <div className="flex items-center gap-2 mt-3 text-sm sm:text-base">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <span className="font-bold text-black">{profile.rating ?? 0}</span>
+                  <span className="font-semibold text-gray-700">
+                    · {profile.total_earnings ? `KES ${profile.total_earnings} earned` : 'New'}
                   </span>
                 </div>
               </div>
@@ -75,23 +80,27 @@ export default async function ProfilePage({
               {isOwner && (
                 <Link
                   href="/profile/edit"
-                  className="bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-indigo-700"
+                  className="bg-blue-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-md"
                 >
                   Edit Profile
                 </Link>
               )}
             </div>
 
+            {/* Bio */}
             {profile.bio && (
-              <p className="mt-4 text-gray-700 whitespace-pre-line">{profile.bio}</p>
+              <p className="mt-4 text-sm sm:text-base font-medium text-gray-800 whitespace-pre-line">
+                {profile.bio}
+              </p>
             )}
 
+            {/* Skills */}
             {profile.skills && profile.skills.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-4">
                 {profile.skills.map((s: string) => (
                   <span
                     key={s}
-                    className="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full"
+                    className="text-xs sm:text-sm font-bold bg-blue-50 text-blue-800 px-3 py-1 rounded-full border border-blue-100"
                   >
                     {s}
                   </span>
@@ -99,44 +108,68 @@ export default async function ProfilePage({
               </div>
             )}
 
-            {profile.hourly_rate && (
-              <div className="mt-4 text-sm">
-                <span className="text-gray-500">Rate: </span>
-                <span className="font-semibold text-indigo-600">
-                  KES {profile.hourly_rate}/hr
-                </span>
-              </div>
-            )}
+            {/* Portfolio Button & Rate */}
+            <div className="mt-6 flex flex-wrap items-center gap-4">
+              {profile.portfolio_url && profile.role === 'freelancer' && (
+                <a
+                  href={profile.portfolio_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-gray-900 text-white px-5 py-2 rounded-lg font-bold hover:bg-gray-800 transition shadow-sm text-sm"
+                >
+                  <Briefcase className="w-4 h-4" />
+                  View Portfolio
+                </a>
+              )}
+
+              {profile.hourly_rate && (
+                <div className="text-sm sm:text-base">
+                  <span className="text-black font-bold">Rate: </span>
+                  <span className="font-extrabold text-blue-700">
+                    KES {profile.hourly_rate}/hr
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Reviews */}
       <div className="mt-10">
-        <h2 className="text-xl font-bold mb-4">Reviews</h2>
+        <h2 className="text-xl sm:text-2xl font-extrabold text-black mb-4">
+          Reviews
+        </h2>
         <div className="space-y-3">
           {reviews?.map((r: any) => (
-            <div key={r.id} className="border rounded-lg p-4">
+            <div
+              key={r.id}
+              className="border-2 border-gray-200 rounded-xl p-4 bg-white"
+            >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700">
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-sm font-bold text-blue-800">
                   {r.profiles?.full_name?.charAt(0) ?? '?'}
                 </div>
                 <div>
-                  <div className="font-medium text-sm">
+                  <div className="font-bold text-black text-sm sm:text-base">
                     {r.profiles?.full_name ?? 'Anonymous'}
                   </div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs sm:text-sm text-amber-500">
                     {'⭐'.repeat(r.rating)}
                   </div>
                 </div>
               </div>
               {r.comment && (
-                <p className="mt-3 text-sm text-gray-700">{r.comment}</p>
+                <p className="mt-3 text-sm sm:text-base font-medium text-gray-800 bg-gray-50 p-3 rounded-lg">
+                  "{r.comment}"
+                </p>
               )}
             </div>
           ))}
           {!reviews?.length && (
-            <p className="text-gray-500 text-sm">No reviews yet.</p>
+            <p className="text-gray-600 font-bold text-sm bg-gray-50 p-6 rounded-xl text-center border-2 border-gray-200">
+              No reviews yet.
+            </p>
           )}
         </div>
       </div>

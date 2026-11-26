@@ -47,7 +47,7 @@ export default function SkillsSelector({
   }
 
   return (
-    <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto p-2 border-2 border-gray-300 rounded-lg bg-gray-50">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-60 overflow-y-auto p-2 border-2 border-gray-300 rounded-lg bg-gray-50">
       {CATEGORIES.map((catName) => {
         const isSelected = selectedSkills.includes(catName)
         return (
@@ -55,7 +55,7 @@ export default function SkillsSelector({
             key={catName} 
             className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer border-2 transition ${
               isSelected 
-                ? 'bg-blue-100 border-emerald-500' 
+                ? 'bg-blue-50 border-blue-500' 
                 : 'bg-white border-gray-200 hover:border-blue-300'
             }`}
           >
@@ -65,8 +65,8 @@ export default function SkillsSelector({
               checked={isSelected}
               onChange={() => toggleSkill(catName)}
             />
-            <div className={`w-5 h-5 rounded flex items-center justify-center border flex-shrink-0 ${
-              isSelected ? 'bg-emerald-600 border-emerald-600' : 'border-gray-300'
+            <div className={`w-5 h-5 rounded flex items-center justify-center border flex-shrink-0 transition-colors ${
+              isSelected ? 'bg-blue-600 border-blue-600' : 'border-gray-300'
             }`}>
               {isSelected && <Check className="w-3 h-3 text-white" />}
             </div>
