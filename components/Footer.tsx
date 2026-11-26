@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="bg-gray-900 text-gray-300 mt-20">
       <div className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         <div>
-          <h3 className="text-white text-xl font-extrabold mb-3">Task<span className="text-blue-400">Vera</span></h3>
+          <h3 className="text-white text-xl font-extrabold mb-3">Task<span className="text-amber-400">Vera</span></h3>
           <p className="text-sm font-medium">We Connect You with Skilled Freelancers. Earn while you learn.</p>
         </div>
         <div>
