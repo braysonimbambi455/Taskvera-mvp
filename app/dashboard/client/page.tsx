@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { formatKES, timeAgo } from '@/lib/utils'
-import AcceptRejectButtons from './AcceptRejectButtons' // We will create this next
 
 export const dynamic = 'force-dynamic'
 
@@ -43,7 +42,7 @@ export default async function ClientDashboard() {
   const pendingProposals = proposals?.filter(p => p.status === 'pending').length ?? 0
 
   const stats = [
-    { label: 'Open Jobs', value: openJobs, color: 'text-emerald-600' },
+    { label: 'Open Jobs', value: openJobs, color: 'text-blue-600' },
     { label: 'Jobs In Progress', value: inProgressJobs, color: 'text-yellow-600' },
     { label: 'Total Proposals', value: proposals?.length ?? 0, color: 'text-green-600' },
     { label: 'New Proposals', value: pendingProposals, color: 'text-purple-600' },
@@ -59,7 +58,7 @@ export default async function ClientDashboard() {
         </div>
         <Link
           href="/post-job"
-          className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-emerald-700 shadow-md transition"
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-md transition"
         >
           + Post a New Job
         </Link>
@@ -81,7 +80,7 @@ export default async function ClientDashboard() {
         <div>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-extrabold text-black">Your Posted Jobs</h2>
-            <Link href="/jobs" className="text-emerald-600 font-bold hover:underline text-sm">View All</Link>
+            <Link href="/jobs" className="text-blue-600 font-bold hover:underline text-sm">View All</Link>
           </div>
           <div className="space-y-3">
             {jobs?.slice(0, 5).map((job) => (
@@ -110,7 +109,7 @@ export default async function ClientDashboard() {
             {jobs?.length === 0 && (
               <div className="text-center py-10 border-2 border-gray-200 rounded-lg bg-gray-50">
                 <p className="text-gray-600 font-bold mb-2">You haven't posted any jobs yet.</p>
-                <Link href="/post-job" className="text-emerald-600 font-bold hover:underline">Post your first job</Link>
+                <Link href="/post-job" className="text-blue-600 font-bold hover:underline">Post your first job</Link>
               </div>
             )}
           </div>
@@ -120,11 +119,11 @@ export default async function ClientDashboard() {
         <div>
           <h2 className="text-xl font-extrabold text-black mb-4">Recent Proposals Received</h2>
           <div className="space-y-4">
-            {proposals?.map((proposal: any) => (
+            {proposals?.slice(0, 5).map((proposal: any) => (
               <div key={proposal.id} className="border-2 border-gray-200 rounded-xl p-5 bg-white shadow-sm">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center font-bold text-emerald-800">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-800">
                       {proposal.profiles?.full_name?.charAt(0) || '?'}
                     </div>
                     <div>
@@ -147,7 +146,7 @@ export default async function ClientDashboard() {
 
                 <div className="mb-4">
                   <div className="text-sm font-bold text-gray-700">For: <span className="text-black">{proposal.jobs?.title}</span></div>
-                  <div className="text-sm font-bold text-emerald-700 mt-1">Bid: {formatKES(proposal.bid_amount)} ({proposal.delivery_days} days)</div>
+                  <div className="text-sm font-bold text-blue-700 mt-1">Bid: {formatKES(proposal.bid_amount)} ({proposal.delivery_days} days)</div>
                   {proposal.cover_letter && (
                     <div className="text-sm text-gray-600 mt-2 bg-gray-50 p-3 rounded-lg border border-gray-100 line-clamp-3 italic">
                       "{proposal.cover_letter}"
@@ -155,17 +154,17 @@ export default async function ClientDashboard() {
                   )}
                 </div>
 
-                {/* Accept/Reject Buttons (Only show if pending) */}
-                {proposal.status === 'pending' ? (
-                  <AcceptRejectButtons proposalId={proposal.id} />
-                ) : (
-                  <Link 
-                    href={`/jobs/${proposal.job_id}`} 
-                    className="block text-center mt-3 bg-gray-100 text-gray-700 py-2 rounded-lg font-bold text-sm hover:bg-gray-200 transition"
-                  >
-                    View Job Details
-                  </Link>
-                )}
+                {/* Link to Job Page to Hire or view details */}
+                <Link 
+                  href={`/jobs/${proposal.job_id}`} 
+                  className={`block text-center py-2 rounded-lg font-bold text-sm transition ${
+                    proposal.status === 'pending' 
+                      ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {proposal.status === 'pending' ? 'Review & Hire' : 'View Job Details'}
+                </Link>
               </div>
             ))}
             {proposals?.length === 0 && (
