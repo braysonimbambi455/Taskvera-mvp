@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import PasswordInput from '@/components/PasswordInput'
+import SkillsSelector from '@/components/profile/SkillsSelector'
 
 export default function Register() {
   const router = useRouter()
@@ -19,16 +20,26 @@ export default function Register() {
     password: '',
     university: '',
     company_name: '',
+    portfolio_url: '',
+    phone: '', // NEW: Phone Number
   })
+  const [skills, setSkills] = useState<string[]>([]) // NEW: Skills
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
+
+    // Validation for freelancers
+    if (role === 'freelancer' && skills.length === 0) {
+      setError('⚠️ Please select at least one skill from the list.')
+      return
+    }
+
     setLoading(true)
     setError('')
 
-    const { error: authError } = await supabase.auth.signUp({
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
@@ -41,9 +52,8 @@ export default function Register() {
       },
     })
 
-    setLoading(false)
-
     if (authError) {
+      setLoading(false)
       let msg = authError.message
       const lower = authError.message.toLowerCase()
 
@@ -62,13 +72,31 @@ export default function Register() {
       return
     }
 
+    // 2. Save extra freelancer details (Skills, Portfolio, Phone)
+    if (authData.user && role === 'freelancer') {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ 
+          skills: skills,
+          portfolio_url: form.portfolio_url || null,
+          phone: form.phone || null
+        })
+        .eq('id', authData.user.id)
+
+      if (profileError) {
+        console.error('Failed to save profile details:', profileError)
+        toast.error('Account created, but some details failed to save. Please update your profile.')
+      }
+    }
+
+    setLoading(false)
     toast.success('Account created!')
     router.push('/dashboard')
     router.refresh()
   }
 
   const inputClass =
-    'w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'
+    'w-full border-2 border-gray-400 rounded-lg p-3 text-black font-bold placeholder:text-gray-800 placeholder:font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-12">
@@ -89,11 +117,11 @@ export default function Register() {
               onClick={() => setRole(r)}
               className={`py-2 rounded-md font-bold transition ${
                 role === r
-                  ? 'bg-white shadow text-emerald-700'
+                  ? 'bg-white shadow text-blue-700'
                   : 'text-gray-800 hover:text-black'
               }`}
             >
-              {r === 'freelancer' ? 'freelancer' : 'Company'}
+              {r === 'freelancer' ? 'Freelancer' : 'Company'}
             </button>
           ))}
         </div>
@@ -125,20 +153,50 @@ export default function Register() {
             name="new-password"
           />
 
-          {role === 'freelancer' ? (
+          {role === 'client' ? (
             <input
-              placeholder="University"
-              value={form.university}
-              onChange={(e) => setForm({ ...form, university: e.target.value })}
-              className={inputClass}
-            />
-          ) : (
-            <input
+              required
               placeholder="Company name"
               value={form.company_name}
               onChange={(e) => setForm({ ...form, company_name: e.target.value })}
               className={inputClass}
             />
+          ) : (
+            <div className="space-y-4 border-t-2 border-gray-100 pt-4 mt-4">
+              <div>
+                <label className="block text-sm font-bold text-black mb-2">
+                  Phone Number (M-Pesa) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  required
+                  type="tel"
+                  placeholder="e.g. 0712345678"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  className={inputClass}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-bold text-black mb-2">
+                  Select Your Skills (Required)
+                </label>
+                <SkillsSelector selectedSkills={skills} onChange={setSkills} />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-bold text-black mb-2">
+                  Portfolio Link (Optional)
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://yourportfolio.com"
+                  value={form.portfolio_url}
+                  onChange={(e) => setForm({ ...form, portfolio_url: e.target.value })}
+                  className={inputClass}
+                />
+              </div>
+            </div>
           )}
 
           {error && (
@@ -150,7 +208,7 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold hover:bg-emerald-700 disabled:opacity-50 transition-colors shadow-md"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md"
           >
             {loading ? 'Creating account...' : 'Create Account'}
           </button>
@@ -160,7 +218,7 @@ export default function Register() {
           Already have an account?{' '}
           <Link
             href="/login"
-            className="text-emerald-700 font-extrabold hover:underline"
+            className="text-blue-700 font-extrabold hover:underline"
           >
             Log in
           </Link>
