@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star, Briefcase } from 'lucide-react'
+import { Star, Briefcase, Phone } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -108,7 +108,7 @@ export default async function ProfilePage({
               </div>
             )}
 
-            {/* Portfolio Button & Rate */}
+            {/* Portfolio Button, Phone Number & Rate */}
             <div className="mt-6 flex flex-wrap items-center gap-4">
               {profile.portfolio_url && profile.role === 'freelancer' && (
                 <a
@@ -122,8 +122,19 @@ export default async function ProfilePage({
                 </a>
               )}
 
+              {/* PHONE NUMBER SECTION */}
+              {profile.phone && profile.role === 'freelancer' && (
+                <a
+                  href={`tel:${profile.phone}`}
+                  className="inline-flex items-center gap-2 bg-blue-50 text-blue-800 border-2 border-blue-200 px-5 py-2 rounded-lg font-bold hover:bg-blue-100 transition shadow-sm text-sm"
+                >
+                  <Phone className="w-4 h-4" />
+                  {profile.phone}
+                </a>
+              )}
+
               {profile.hourly_rate && (
-                <div className="text-sm sm:text-base">
+                <div className="text-sm sm:text-base ml-2">
                   <span className="text-black font-bold">Rate: </span>
                   <span className="font-extrabold text-blue-700">
                     KES {profile.hourly_rate}/hr

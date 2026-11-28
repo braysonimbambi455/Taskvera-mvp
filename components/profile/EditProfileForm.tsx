@@ -27,7 +27,8 @@ export default function EditProfileForm({
     company_name: profile.company_name ?? '',
     bio: profile.bio ?? '',
     hourly_rate: profile.hourly_rate ?? '',
-    portfolio_url: profile.portfolio_url ?? '', // NEW: Portfolio Link
+    portfolio_url: profile.portfolio_url ?? '',
+    phone: profile.phone ?? '', // NEW: Phone Number
   })
   
   // Use state array for skills
@@ -101,9 +102,10 @@ export default function EditProfileForm({
     const updates: any = {
       full_name: form.full_name,
       bio: form.bio || null,
-      skills: skills.length > 0 ? skills : null, // Save array of skills
+      skills: skills.length > 0 ? skills : null,
       hourly_rate: form.hourly_rate ? Number(form.hourly_rate) : null,
-      portfolio_url: form.portfolio_url || null, // Save portfolio URL
+      portfolio_url: form.portfolio_url || null,
+      phone: form.phone || null, // Save phone number
     }
 
     if (profile.role === 'freelancer') {
@@ -232,6 +234,19 @@ export default function EditProfileForm({
               Services Offered (Select all that apply)
             </label>
             <SkillsSelector selectedSkills={skills} onChange={setSkills} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-black mb-2">
+              Phone Number (M-Pesa)
+            </label>
+            <input
+              type="tel"
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              placeholder="e.g. 0712345678"
+              className={inputClass}
+            />
           </div>
 
           <div>
