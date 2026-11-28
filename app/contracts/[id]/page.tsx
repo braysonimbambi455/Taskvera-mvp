@@ -33,11 +33,17 @@ export default async function ContractPage({
   if (!contract) notFound()
 
   const isClient = contract.client_id === user.id
-  const isfreelancer = contract.freelancer_id === user.id
-  if (!isClient && !isfreelancer) redirect('/dashboard')
+  const isFreelancer = contract.freelancer_id === user.id
+  
+  if (!isClient && !isFreelancer) redirect('/dashboard')
 
   const other = isClient ? (contract as any).freelancer : (contract as any).client
-  const otherName = other?.full_name ?? 'User'
+  
+  // Show Company Name if Freelancer is viewing, else show Freelancer name
+  const otherName = isClient 
+    ? (other?.full_name ?? 'Freelancer') 
+    : (other?.company_name || other?.full_name || 'Company')
+    
   const job = (contract as any).jobs
 
   return (
@@ -81,8 +87,7 @@ export default async function ContractPage({
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Client</div>
             <div className="font-bold text-black text-base">
-              {(contract as any).client?.company_name ||
-                (contract as any).client?.full_name}
+              {(contract as any).client?.company_name || (contract as any).client?.full_name}
             </div>
           </div>
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">

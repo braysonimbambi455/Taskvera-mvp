@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { formatKES, timeAgo } from '@/lib/utils'
-import { CheckCircle, XCircle } from 'lucide-react'
+import FreelancerDeliveryButton from '@/components/contracts/FreelancerDeliveryButton'
+import { CheckCircle, Clock } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,34 +19,34 @@ export default async function FreelancerDashboard() {
     .eq('id', user.id)
     .single()
 
-  // Security check: Kick clients out
-  if (profile?.role !== 'freelancer') {
+  if (profile?.role === 'client') {
     redirect('/dashboard/client')
   }
 
-  // 1. Fetch Proposals (Simplified to prevent silent crashes)
-  const { data: proposals, error: propError } = await supabase
+  // 1. Fetch Proposals
+  const { data: proposals } = await supabase
     .from('proposals')
-    .select('*, jobs(title, budget_min, budget_max)') // Removed profiles(...) here
+    .select('*, jobs(title, budget_min, budget_max)')
     .eq('freelancer_id', user.id)
     .order('created_at', { ascending: false })
 
-  if (propError) {
-    console.error("Error fetching proposals:", propError.message)
-  }
-
-  // 2. Fetch Active Contracts
-  const { data: contracts, error: contractError } = await supabase
+  // 2. Fetch Active Contracts (Joining client info)
+  const { data: activeContracts } = await supabase
     .from('contracts')
-    .select('*, jobs(title, description)') // Removed nested profiles join here too
+    .select('*, jobs(title, category), client:client_id(full_name, company_name)')
     .eq('freelancer_id', user.id)
+    .eq('status', 'active')
     .order('created_at', { ascending: false })
 
-  if (contractError) {
-    console.error("Error fetching contracts:", contractError.message)
-  }
+  // 3. Fetch Delivered Contracts (Waiting for payment)
+  const { data: deliveredContracts } = await supabase
+    .from('contracts')
+    .select('*, jobs(title, category), client:client_id(full_name, company_name)')
+    .eq('freelancer_id', user.id)
+    .eq('status', 'delivered')
+    .order('created_at', { ascending: false })
 
-  // 3. Fetch Notifications
+  // 4. Fetch Notifications
   const { data: notifications } = await supabase
     .from('notifications')
     .select('*')
@@ -53,18 +54,20 @@ export default async function FreelancerDashboard() {
     .order('created_at', { ascending: false })
     .limit(3)
 
-  // 4. Calculate Stats
-  const activeContracts = contracts?.filter(c => c.status === 'active') || []
-  const deliveredContracts = contracts?.filter(c => c.status === 'delivered') || []
+  // 5. Calculate Stats
   const pendingProposals = proposals?.filter(p => p.status === 'pending') || []
   
-  const totalEarned = contracts
-    ?.filter(c => c.status === 'paid')
-    .reduce((sum, c) => sum + Number(c.amount), 0) || 0
+  const { data: paidContracts } = await supabase
+    .from('contracts')
+    .select('amount')
+    .eq('freelancer_id', user.id)
+    .eq('status', 'paid')
+
+  const totalEarned = paidContracts?.reduce((sum, c) => sum + Number(c.amount), 0) || 0
 
   const stats = [
     { label: 'Total Earned', value: formatKES(totalEarned), color: 'text-green-600' },
-    { label: 'Active Contracts', value: activeContracts.length, color: 'text-emerald-600' },
+    { label: 'Active Jobs', value: activeContracts?.length || 0, color: 'text-blue-600' },
     { label: 'Pending Proposals', value: pendingProposals.length, color: 'text-yellow-600' },
   ]
 
@@ -78,7 +81,7 @@ export default async function FreelancerDashboard() {
         </div>
         <Link 
           href="/jobs" 
-          className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-emerald-700 shadow-md transition"
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-md transition"
         >
           Find New Work
         </Link>
@@ -100,7 +103,7 @@ export default async function FreelancerDashboard() {
                 {note.title.includes('Accepted') ? (
                   <CheckCircle className="w-5 h-5 text-emerald-600 mt-0.5" />
                 ) : (
-                  <XCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                  <Clock className="w-5 h-5 text-red-600 mt-0.5" />
                 )}
                 <div>
                   <h3 className={`font-bold ${
@@ -108,7 +111,7 @@ export default async function FreelancerDashboard() {
                   }`}>{note.title}</h3>
                   <p className={`text-sm mt-1 ${
                     note.title.includes('Accepted') ? 'text-emerald-800' : 'text-red-800'
-                  }`}>{note.message}</p>
+                  }`}>{note.body}</p>
                 </div>
               </div>
               <span className="text-xs font-bold text-gray-500">{timeAgo(note.created_at)}</span>
@@ -131,54 +134,65 @@ export default async function FreelancerDashboard() {
         
         {/* ACTIVE CONTRACTS SECTION */}
         <div>
-          <h2 className="text-xl font-extrabold text-black mb-4">Active Contracts</h2>
-          <div className="space-y-3">
-            {activeContracts.map((contract: any) => (
-              <Link 
-                key={contract.id} 
-                href={`/contracts/${contract.id}`}
-                className="block border-2 border-emerald-200 bg-emerald-50 rounded-lg p-5 hover:shadow-md transition"
-              >
+          <h2 className="text-xl font-extrabold text-black mb-4">Active Jobs</h2>
+          <div className="space-y-4">
+            {activeContracts?.map((contract: any) => (
+              <div key={contract.id} className="border-2 border-blue-200 rounded-xl p-5 bg-blue-50 shadow-sm">
                 <div className="flex justify-between items-start mb-2">
-                  <span className="font-bold text-black text-lg">{contract.jobs?.title || 'Contract'}</span>
-                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 bg-emerald-600 text-white rounded-md">
-                    Active
+                  <span className="font-extrabold text-black text-lg">{contract.jobs?.title}</span>
+                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-blue-200 text-blue-900">
+                    In Progress
                   </span>
                 </div>
-                <div className="text-sm font-bold text-gray-700">
-                  Client Project
+                
+                <div className="text-sm font-bold text-gray-700 mb-3">
+                  Client: {contract.client?.company_name || contract.client?.full_name}
                 </div>
-                <div className="text-sm font-extrabold text-emerald-700 mt-2">
-                  Amount: {formatKES(contract.amount || 0)}
+
+                <div className="text-sm font-extrabold text-blue-700 bg-white p-2 rounded border border-blue-200 inline-block mb-4">
+                  Amount: {formatKES(contract.amount)}
                 </div>
-              </Link>
+
+                {/* The Buttons: Open Chat & Mark as Delivered */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link 
+                    href={`/contracts/${contract.id}`} 
+                    className="flex-1 text-center bg-white border-2 border-blue-600 text-blue-600 py-2 rounded-lg font-bold hover:bg-blue-50 transition"
+                  >
+                    Open Chat
+                  </Link>
+                  <div className="flex-1">
+                    <FreelancerDeliveryButton contractId={contract.id} />
+                  </div>
+                </div>
+              </div>
             ))}
 
-            {deliveredContracts.map((contract: any) => (
+            {deliveredContracts?.map((contract: any) => (
               <Link 
                 key={contract.id} 
                 href={`/contracts/${contract.id}`}
-                className="block border-2 border-green-200 bg-green-50 rounded-lg p-5 hover:shadow-md transition"
+                className="block border-2 border-green-200 bg-green-50 rounded-xl p-5 hover:shadow-md transition"
               >
                 <div className="flex justify-between items-start mb-2">
-                  <span className="font-bold text-black text-lg">{contract.jobs?.title || 'Contract'}</span>
+                  <span className="font-bold text-black text-lg">{contract.jobs?.title}</span>
                   <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 bg-green-600 text-white rounded-md">
-                    Delivered
+                    Awaiting Payment
                   </span>
                 </div>
-                <div className="text-sm font-bold text-gray-700">
-                  Client Project
+                <div className="text-sm font-bold text-gray-700 mb-2">
+                  Client: {contract.client?.company_name || contract.client?.full_name}
                 </div>
-                <div className="text-sm font-extrabold text-green-700 mt-2">
-                  Amount: {formatKES(contract.amount || 0)}
+                <div className="text-sm font-extrabold text-green-700">
+                  Amount: {formatKES(contract.amount)}
                 </div>
               </Link>
             ))}
 
-            {activeContracts.length === 0 && deliveredContracts.length === 0 && (
+            {(!activeContracts || activeContracts.length === 0) && (!deliveredContracts || deliveredContracts.length === 0) && (
               <div className="text-center py-10 border-2 border-gray-200 rounded-lg bg-gray-50">
-                <p className="text-gray-600 font-bold mb-2">No active contracts</p>
-                <Link href="/jobs" className="text-emerald-600 font-bold hover:underline">Apply for jobs to get hired</Link>
+                <p className="text-gray-600 font-bold mb-2">No active jobs</p>
+                <Link href="/jobs" className="text-blue-600 font-bold hover:underline">Apply for jobs to get hired</Link>
               </div>
             )}
           </div>
@@ -192,7 +206,7 @@ export default async function FreelancerDashboard() {
               <Link 
                 key={proposal.id} 
                 href={`/jobs/${proposal.job_id}`}
-                className="block border-2 border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition"
+                className="block border-2 border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition bg-white"
               >
                 <div className="flex justify-between items-start mb-1">
                   <span className="font-bold text-black">{proposal.jobs?.title || 'Job'}</span>
@@ -207,16 +221,13 @@ export default async function FreelancerDashboard() {
                 <div className="text-sm font-bold text-gray-600">
                   Bid: {formatKES(proposal.bid_amount || 0)} · {proposal.delivery_days || 0} days
                 </div>
-                <div className="text-xs font-bold text-gray-500 mt-2">
-                  Client Project
-                </div>
               </Link>
             ))}
 
             {!proposals?.length && (
               <div className="text-center py-10 border-2 border-gray-200 rounded-lg bg-gray-50">
                 <p className="text-gray-600 font-bold mb-2">No proposals sent yet</p>
-                <Link href="/jobs" className="text-emerald-600 font-bold hover:underline">Browse open jobs</Link>
+                <Link href="/jobs" className="text-blue-600 font-bold hover:underline">Browse open jobs</Link>
               </div>
             )}
           </div>

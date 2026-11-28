@@ -17,7 +17,6 @@ export default async function ClientDashboard() {
     .eq('id', user.id)
     .single()
 
-  // Security check: Ensure only clients can access this page
   if (profile?.role !== 'client') {
     redirect('/dashboard/freelancer')
   }
@@ -36,9 +35,17 @@ export default async function ClientDashboard() {
     .eq('jobs.client_id', user.id)
     .order('created_at', { ascending: false })
 
-  // 3. Calculate Stats
+  // 3. Fetch ACTIVE Contracts (This is what populates "Jobs In Progress")
+  const { data: activeContracts } = await supabase
+    .from('contracts')
+    .select('*, jobs(title, category), freelancer:freelancer_id(full_name, university, avatar_url)')
+    .eq('client_id', user.id)
+    .eq('status', 'active') // Only get active ones
+    .order('created_at', { ascending: false })
+
+  // 4. Calculate Stats
   const openJobs = jobs?.filter(j => j.status === 'open').length ?? 0
-  const inProgressJobs = jobs?.filter(j => j.status === 'in_progress').length ?? 0
+  const inProgressJobs = activeContracts?.length ?? 0 // Count active contracts directly
   const pendingProposals = proposals?.filter(p => p.status === 'pending').length ?? 0
 
   const stats = [
@@ -50,21 +57,16 @@ export default async function ClientDashboard() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
-      {/* Header */}
       <div className="flex justify-between items-center flex-wrap gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-extrabold text-black">Client Dashboard</h1>
           <p className="text-gray-800 font-bold">Welcome, {profile?.company_name || profile?.full_name}</p>
         </div>
-        <Link
-          href="/post-job"
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-md transition"
-        >
+        <Link href="/post-job" className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-md transition">
           + Post a New Job
         </Link>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         {stats.map((stat) => (
           <div key={stat.label} className="border-2 border-gray-200 rounded-xl p-5 bg-white shadow-sm">
@@ -80,20 +82,14 @@ export default async function ClientDashboard() {
         <div>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-extrabold text-black">Your Posted Jobs</h2>
-            <Link href="/jobs" className="text-blue-600 font-bold hover:underline text-sm">View All</Link>
           </div>
           <div className="space-y-3">
             {jobs?.slice(0, 5).map((job) => (
-              <Link
-                key={job.id}
-                href={`/jobs/${job.id}`}
-                className="block border-2 border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition bg-white"
-              >
+              <Link key={job.id} href={`/jobs/${job.id}`} className="block border-2 border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition bg-white">
                 <div className="flex justify-between items-start mb-1">
                   <span className="font-bold text-black text-lg">{job.title}</span>
                   <span className={`text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md ${
-                    job.status === 'open' ? 'bg-green-100 text-green-800' :
-                    job.status === 'in_progress' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
+                    job.status === 'open' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                   }`}>
                     {job.status.replace('_', ' ')}
                   </span>
@@ -101,39 +97,67 @@ export default async function ClientDashboard() {
                 <div className="text-sm font-bold text-gray-600">
                   {job.category} · {formatKES(job.budget_min)} – {formatKES(job.budget_max)}
                 </div>
-                <div className="text-xs font-bold text-gray-400 mt-2">
-                  Posted {timeAgo(job.created_at)}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* JOBS IN PROGRESS SECTION (REAL TIME) */}
+        <div>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-extrabold text-black">Jobs In Progress</h2>
+          </div>
+          <div className="space-y-4">
+            {activeContracts?.map((contract: any) => (
+              <Link key={contract.id} href={`/contracts/${contract.id}`} className="block border-2 border-yellow-200 rounded-xl p-5 bg-yellow-50 hover:shadow-md transition">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="font-extrabold text-black text-lg">{contract.jobs?.title}</span>
+                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-yellow-200 text-yellow-900">
+                    In Progress
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 mt-3">
+                  <div className="w-8 h-8 rounded-full bg-yellow-200 flex items-center justify-center font-bold text-yellow-900 text-sm">
+                    {contract.freelancer?.full_name?.charAt(0) || '?'}
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-black">{contract.freelancer?.full_name}</div>
+                    <div className="text-xs font-bold text-gray-600">{contract.freelancer?.university}</div>
+                  </div>
+                </div>
+                <div className="mt-3 text-sm font-bold text-gray-700 bg-white p-2 rounded border border-yellow-200">
+                  Amount: {formatKES(contract.amount)} · <span className="text-blue-600 underline">Click to Chat</span>
                 </div>
               </Link>
             ))}
-            {jobs?.length === 0 && (
+            {activeContracts?.length === 0 && (
               <div className="text-center py-10 border-2 border-gray-200 rounded-lg bg-gray-50">
-                <p className="text-gray-600 font-bold mb-2">You haven't posted any jobs yet.</p>
-                <Link href="/post-job" className="text-blue-600 font-bold hover:underline">Post your first job</Link>
+                <p className="text-gray-600 font-bold mb-2">No jobs in progress.</p>
+                <p className="text-sm text-gray-500 font-medium">Hire a freelancer from your proposals to start.</p>
               </div>
             )}
           </div>
         </div>
 
         {/* PROPOSALS SECTION */}
-        <div>
+        <div className="lg:col-span-2">
           <h2 className="text-xl font-extrabold text-black mb-4">Recent Proposals Received</h2>
-          <div className="space-y-4">
-            {proposals?.slice(0, 5).map((proposal: any) => (
-              <div key={proposal.id} className="border-2 border-gray-200 rounded-xl p-5 bg-white shadow-sm">
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-800">
-                      {proposal.profiles?.full_name?.charAt(0) || '?'}
-                    </div>
-                    <div>
-                      <div className="font-bold text-black">{proposal.profiles?.full_name}</div>
-                      <div className="text-xs text-gray-600 font-bold">
-                        {proposal.profiles?.university || 'Freelancer'} · ⭐ {proposal.profiles?.rating ?? 0}
+          <div className="grid md:grid-cols-2 gap-4">
+            {proposals?.slice(0, 6).map((proposal: any) => (
+              <div key={proposal.id} className="border-2 border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-800">
+                        {proposal.profiles?.full_name?.charAt(0) || '?'}
+                      </div>
+                      <div>
+                        <div className="font-bold text-black">{proposal.profiles?.full_name}</div>
+                        <div className="text-xs text-gray-600 font-bold">
+                          {proposal.profiles?.university || 'Freelancer'} · ⭐ {proposal.profiles?.rating ?? 0}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="text-right">
                     <span className={`text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md ${
                       proposal.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
                       proposal.status === 'accepted' ? 'bg-green-100 text-green-800' : 
@@ -142,35 +166,21 @@ export default async function ClientDashboard() {
                       {proposal.status}
                     </span>
                   </div>
+                  <div className="mb-4">
+                    <div className="text-sm font-bold text-gray-700">For: <span className="text-black">{proposal.jobs?.title}</span></div>
+                    <div className="text-sm font-bold text-blue-700 mt-1">Bid: {formatKES(proposal.bid_amount)} ({proposal.delivery_days} days)</div>
+                  </div>
                 </div>
-
-                <div className="mb-4">
-                  <div className="text-sm font-bold text-gray-700">For: <span className="text-black">{proposal.jobs?.title}</span></div>
-                  <div className="text-sm font-bold text-blue-700 mt-1">Bid: {formatKES(proposal.bid_amount)} ({proposal.delivery_days} days)</div>
-                  {proposal.cover_letter && (
-                    <div className="text-sm text-gray-600 mt-2 bg-gray-50 p-3 rounded-lg border border-gray-100 line-clamp-3 italic">
-                      "{proposal.cover_letter}"
-                    </div>
-                  )}
-                </div>
-
-                {/* Link to Job Page to Hire or view details */}
-                <Link 
-                  href={`/jobs/${proposal.job_id}`} 
-                  className={`block text-center py-2 rounded-lg font-bold text-sm transition ${
-                    proposal.status === 'pending' 
-                      ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
+                <Link href={`/jobs/${proposal.job_id}`} className={`block text-center py-2 rounded-lg font-bold text-sm transition ${
+                    proposal.status === 'pending' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}>
                   {proposal.status === 'pending' ? 'Review & Hire' : 'View Job Details'}
                 </Link>
               </div>
             ))}
             {proposals?.length === 0 && (
-              <div className="text-center py-10 border-2 border-gray-200 rounded-lg bg-gray-50">
+              <div className="col-span-full text-center py-10 border-2 border-gray-200 rounded-lg bg-gray-50">
                 <p className="text-gray-600 font-bold mb-2">No proposals received yet.</p>
-                <p className="text-sm text-gray-500 font-medium">Freelancers will apply once you post a job.</p>
               </div>
             )}
           </div>

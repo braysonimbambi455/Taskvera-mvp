@@ -23,7 +23,6 @@ export async function acceptProposal(proposalId: string) {
     return { error: 'You do not own this job' }
   }
 
-  // CHANGED: Block if already accepted, but ALLOW if rejected (re-hire)
   if (proposal.status === 'accepted') {
     return { error: 'Proposal already accepted' }
   }
@@ -93,8 +92,12 @@ export async function acceptProposal(proposalId: string) {
     link: `/contracts/${contract.id}`,
   })
 
+  // 6. Revalidate all affected paths (This fixes the real-time dashboard issue)
   revalidatePath('/proposals')
-  revalidatePath('/dashboard')
+  revalidatePath('/dashboard/client') // Refresh Client Dashboard
+  revalidatePath('/dashboard/freelancer') // Refresh Freelancer Dashboard
+  revalidatePath('/messages') // Refresh Messages Inbox
+  revalidatePath('/contracts') // Refresh Contracts List
   revalidatePath('/jobs')
   revalidatePath(`/jobs/${job.id}`)
 
@@ -138,7 +141,8 @@ export async function rejectProposal(proposalId: string) {
   })
 
   revalidatePath('/proposals')
-  revalidatePath('/dashboard')
-
+  revalidatePath('/dashboard/client')
+  revalidatePath('/dashboard/freelancer')
+  
   return { ok: true }
 }
