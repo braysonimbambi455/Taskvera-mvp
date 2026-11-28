@@ -1,16 +1,29 @@
 import Link from 'next/link'
-import { MOCK_JOBS } from '@/lib/data'
+import { createClient } from '@/lib/supabase/server'
+import { formatKES, timeAgo } from '@/lib/utils'
 import { 
   Code2, 
   Bot, 
   Palette, 
   Megaphone, 
   BarChart3, 
-  CheckCircle2 
+  CheckCircle2,
+  Briefcase
 } from 'lucide-react'
 
-export default function Home() {
-  
+export const dynamic = 'force-dynamic'
+
+export default async function Home() {
+  const supabase = await createClient()
+
+  // Fetch real recent jobs from the database
+  const { data: recentJobs } = await supabase
+    .from('jobs')
+    .select('*, profiles(full_name, company_name)')
+    .eq('status', 'open')
+    .order('created_at', { ascending: false })
+    .limit(4)
+
   // The 5 categories from your image
   const expertiseAreas = [
     {
@@ -132,7 +145,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* RECENT JOBS */}
+      {/* RECENT JOBS - REAL TIME FROM DATABASE */}
       <section className="bg-white py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex justify-between items-center mb-8">
@@ -144,31 +157,48 @@ export default function Home() {
               View all →
             </Link>
           </div>
+          
           <div className="grid md:grid-cols-2 gap-6">
-            {MOCK_JOBS.slice(0, 4).map((job) => (
+            {recentJobs?.map((job: any) => (
               <Link
                 key={job.id}
                 href={`/jobs/${job.id}`}
                 className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition"
               >
-                <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded">
-                  {job.category}
-                </span>
+                <div className="flex justify-between items-start">
+                  <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded">
+                    {job.category}
+                  </span>
+                  <span className="text-xs text-gray-500 font-bold">
+                    {timeAgo(job.created_at)}
+                  </span>
+                </div>
                 <h3 className="text-lg font-extrabold text-black mt-3 line-clamp-2">
                   {job.title}
                 </h3>
-                <p className="text-black font-medium text-sm line-clamp-2 mt-2">
+                <p className="text-gray-800 font-medium text-sm line-clamp-2 mt-2">
                   {job.description}
                 </p>
-                <div className="flex justify-between mt-4 text-sm">
+                <div className="flex justify-between mt-4 text-sm border-t-2 border-gray-100 pt-3">
                   <span className="font-extrabold text-emerald-700">
-                    KES {job.budget_min.toLocaleString()} –{' '}
-                    {job.budget_max.toLocaleString()}
+                    {formatKES(job.budget_min)} – {formatKES(job.budget_max)}
                   </span>
-                  <span className="text-black font-bold">{job.posted}</span>
+                  <span className="text-gray-800 font-bold">
+                    {job.profiles?.company_name || job.profiles?.full_name || 'Client'}
+                  </span>
                 </div>
               </Link>
             ))}
+            
+            {(!recentJobs || recentJobs.length === 0) && (
+              <div className="col-span-2 text-center py-10 bg-gray-50 border-2 border-gray-200 rounded-xl">
+                <Briefcase className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+                <p className="text-gray-600 font-bold">No jobs posted yet.</p>
+                <Link href="/post-job" className="text-emerald-600 font-bold hover:underline mt-2 inline-block">
+                  Post the first job
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>
